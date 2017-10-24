@@ -5,6 +5,7 @@ CSV_EXTENSION = '.csv'
 TXT_EXTENSION = '.txt'
 VTP_EXTENSION = '.vtp'
 
+PERSISTENCE_PAIRS_SUFFIX = '-persistent-pairs'
 PERSISTENCE_POINTS_SUFFIX = '-persistent-points_data'
 PERSISTENCE_CELLS_SUFFIX = '-persistent-cells_data'
 FIELD_DATA_SUFFIX = '-field_data'

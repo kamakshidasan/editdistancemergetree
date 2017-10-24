@@ -7,7 +7,7 @@ import subprocess
 from helper import *
 
 # Input file path for which persistence diagram should be computed
-file_path = '/home/raghavendra/Desktop/persistence-distances/input/tv_3.vtk'
+file_path = '/home/raghavendra/Desktop/persistence-distances/persistence/input/tv_3.vtk'
 
 # Only pairs having persistence above this theshold will be considered
 persistence_theshold = 0.1
@@ -42,6 +42,13 @@ birth_scalar = None
 birth_vertex = None
 birth_type = None
 
+# Prepare file for writing
+pairs_file_path = get_output_path(file_path, [PERSISTENCE_PAIRS_SUFFIX, VTP_EXTENSION])
+pairs_file = open(pairs_file_path, 'w')
+fieldnames = ['birth_vertex', 'birth_scalar', 'birth_type', 'death_vertex', 'death_scalar' , 'death_type', 'persistence', 'pair_type']
+writer = csv.writer(pairs_file, delimiter=',')
+writer.writerow(fieldnames)
+
 # The persistent pairs are one after the other
 # First comes birth; immediately followed by death [Adhitya getting philosophical :P]
 
@@ -58,6 +65,9 @@ for index in range(num_persistent_points):
 	# If index is even, we are processing death; else just store attributes of birth
 	# When death occurs, find persistence and moksha.
 	if index & 1:
+
+
+		
 		death_scalar = scalar_value
 		death_vertex = vertex_id
 		death_type = vertex_type

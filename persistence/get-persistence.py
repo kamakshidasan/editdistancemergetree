@@ -1,4 +1,5 @@
-#### import the simple module from the paraview
+# Get the persistence diagram with nice display on Paraview
+
 from paraview.simple import *
 import os, csv, sys
 import subprocess
@@ -7,7 +8,7 @@ from helper import *
 #### disable automatic camera reset on 'Show'
 paraview.simple._DisableFirstRenderCameraReset()
 
-file_path = '/home/raghavendra/Desktop/persistence-distances/input/tv_3.vtk'
+file_path = '/home/raghavendra/Desktop/persistence-distances/persistence/input/tv_3.vtk'
 persistence_theshold = 0.1
 
 file_name = get_file_name(file_path)
@@ -128,4 +129,4 @@ for index in range(num_persistent_points):
 		birth_type = vertex_type
 
 # Close Paraview instance
-os._exit(0)
+#os._exit(0)
