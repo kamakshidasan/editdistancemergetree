@@ -7,10 +7,11 @@ import subprocess
 from helper import *
 
 # Input file path for which persistence diagram should be computed
-file_path = '/home/raghavendra/Desktop/persistence-distances/persistence/input/tv_3.vtk'
+#file_path = '/home/raghavendra/Desktop/persistence-distances/persistence/input/adhitya.vtk'
+file_path = '/home/nagarjun/Desktop/bitbucket/editdistancemergetree/persistence/input/adhitya.vtk'
 
 # Only pairs having persistence above this theshold will be considered
-persistence_theshold = 0.1
+persistence_theshold = 0.0
 
 # Get naming conventions
 file_name = get_file_name(file_path)
@@ -43,9 +44,12 @@ birth_vertex = None
 birth_type = None
 
 # Prepare file for writing
-pairs_file_path = get_output_path(file_path, [PERSISTENCE_PAIRS_SUFFIX, VTP_EXTENSION])
+pairs_file_path = get_output_path(file_path, [PERSISTENCE_PAIRS_SUFFIX, CSV_EXTENSION])
 pairs_file = open(pairs_file_path, 'w')
-fieldnames = ['birth_vertex', 'birth_scalar', 'birth_type', 'death_vertex', 'death_scalar' , 'death_type', 'persistence', 'pair_type']
+
+#fieldnames = ['dimension', 'birth_vertex', 'birth', 'birth_type', 'death_vertex', 'death', 'death_type', 'persistence', 'pair_type']
+fieldnames = ['dimension', 'Death', 'Birth']
+
 writer = csv.writer(pairs_file, delimiter=',')
 writer.writerow(fieldnames)
 
@@ -56,7 +60,7 @@ writer.writerow(fieldnames)
 for index in range(num_persistent_points):
 	vertex_id = persistence_data.GetPointData().GetArray('VertexIdentifier').GetValue(index)
 	vertex_type = persistence_data.GetPointData().GetArray('NodeType').GetValue(index)
-
+	
 	# We can find the scalar value of the vertex from the input scalar field
 	scalar_value = vtk_data.GetPointData().GetArray('volume_scalars').GetValue(vertex_id)
 
@@ -66,7 +70,8 @@ for index in range(num_persistent_points):
 	# When death occurs, find persistence and moksha.
 	if index & 1:
 
-
+		# We can find the pair type for each such pair [Laziness of not wanting to compute later]
+		pair_type = persistence_data.GetCellData().GetArray('PairType').GetValue((index-1)/2)
 		
 		death_scalar = scalar_value
 		death_vertex = vertex_id
@@ -75,6 +80,8 @@ for index in range(num_persistent_points):
 		persistence = death_scalar - birth_scalar
 
 		if persistence > persistence_theshold:
+			content = [0, death_scalar, birth_scalar]
+			writer.writerow(content)
 			print round(death_scalar, 3), round(birth_scalar, 3), round(persistence, 3)
 	
 	# Store for next time
@@ -82,6 +89,8 @@ for index in range(num_persistent_points):
 		birth_scalar = scalar_value
 		birth_vertex = vertex_id
 		birth_type = vertex_type
+
+pairs_file.close()
 
 # Close Paraview instance
 os._exit(0)
