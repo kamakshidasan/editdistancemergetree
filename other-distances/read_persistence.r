@@ -1,8 +1,10 @@
 library('TDA')
 
-diagram1 <-as.matrix(read.csv(file="/home/nagarjun/Desktop/bitbucket/editdistancemergetree/persistence/output/tv_1-persistent-pairs.csv", header=TRUE, sep=","))
-diagram2 <-as.matrix(read.csv(file="/home/nagarjun/Desktop/bitbucket/editdistancemergetree/persistence/output/tv_2-persistent-pairs.csv", header=TRUE, sep=","))
-print(bottleneck(Diag1 = diagram1, Diag2 = diagram2, dimension = 0))
+# Simple Test if bottleneck works [Why doesn't have R have multiline comments?!]
+
+#diagram1 <-as.matrix(read.csv(file="/home/nagarjun/Desktop/bitbucket/editdistancemergetree/persistence/output/tv_1-persistent-pairs.csv", header=TRUE, sep=","))
+#diagram2 <-as.matrix(read.csv(file="/home/nagarjun/Desktop/bitbucket/editdistancemergetree/persistence/output/tv_2-persistent-pairs.csv", header=TRUE, sep=","))
+# print(bottleneck(Diag1 = diagram1, Diag2 = diagram2, dimension = 0))
 
 diagrams = list()
 
@@ -19,10 +21,12 @@ for (i in 1:files_number){
 }
 
 for (i in 2:files_number){
+	# Compare consecutively
 	#file_names <- paste(i-1, i, sep=",")
 	#bottleneck_distance <- bottleneck(Diag1 = diagrams[[i-1]], Diag2 = diagrams[[i]], dimension = 0)
 	#wasserstein_distance <- wasserstein(Diag1 = diagrams[[i-1]], Diag2 = diagrams[[i]], p = 2, dimension = 0)
 
+	# Compare with the first one
 	file_names <- paste(1, i, sep=",")
 	bottleneck_distance <- bottleneck(Diag1 = diagrams[[1]], Diag2 = diagrams[[i]], dimension = 0)
 	wasserstein_distance <- wasserstein(Diag1 = diagrams[[1]], Diag2 = diagrams[[i]], p = 2, dimension = 0)

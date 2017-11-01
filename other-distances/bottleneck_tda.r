@@ -1,4 +1,6 @@
 # Does not work currently
+# gridDiag takes a triangulated input
+# Adhitya: Find a way to send the triangles as input as well
 
 library("TDA")
 
