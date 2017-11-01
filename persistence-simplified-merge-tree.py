@@ -3,9 +3,14 @@
 # Workaround: Trace + Click on Z- Axis icon on top + Paste Camera Position
 
 from paraview.simple import *
+import csv, os
+from datetime import datetime
+
+startTime = datetime.now()
 
 # create a new 'Legacy VTK Reader'
-vtkFile = LegacyVTKReader(FileNames=['/home/nagarjun/Desktop/adhitya/data/tv_101.vtk'])
+vtkFile = LegacyVTKReader(FileNames=['/home/nagarjun/Desktop/bitbucket/editdistancemergetree/persistence/input/tv_102.vtk'])
+min_persistence = 0.0
 
 # show data in view
 renderView1 = GetActiveViewOrCreate('RenderView')
@@ -45,13 +50,24 @@ renderView2.CameraPosition = [0, 0.5, 10000.0]
 renderView2.CameraFocalPoint = [0, 0.5, 0.0]
 
 # create Threshold for Persistence
-########################################################################
-# ADHITYA : Find max persistence by iterating across the diagram! 
-#######################################################################
+
+# find max persistence by iterating across the diagram! 
+persistence_data = servermanager.Fetch(persistenceDiagram)
+
+# Get the number of persistent points and arcs
+num_persistent_points = persistenceDiagram.GetDataInformation().GetNumberOfPoints()
+num_persistent_cells = persistenceDiagram.GetDataInformation().GetNumberOfCells()
+
+max_persistence = 0
+for index in range(num_persistent_cells):
+	current_persistence = persistence_data.GetCellData().GetArray('Persistence').GetValue(index)
+	max_persistence = max(current_persistence, max_persistence)
 
 persistenceThreshold = Threshold(Input=persistenceDiagram)
 persistenceThreshold.Scalars = ['CELLS', 'Persistence']
-persistenceThreshold.ThresholdRange = [0.05, 1.9]
+
+# filter all persistent pairs above minimum persistence threshold 
+persistenceThreshold.ThresholdRange = [min_persistence, max_persistence]
 persistenceThresholdDisplay = Show(persistenceThreshold, renderView2)
 
 # set active view and source
@@ -142,3 +158,78 @@ layout2.AssignView(6, spreadSheetView1)
 
 # show nodes of computed contour forest in view
 contourForestDisplayNodes = Show(contourForest, spreadSheetView1)
+
+# Write persistent pairs after thresholding to file
+pairs_file = open('/home/nagarjun/Desktop/bitbucket/editdistancemergetree/pairs-tv_101.csv', 'w')
+fieldnames = ['Birth', 'Death']
+writer = csv.writer(pairs_file, delimiter=',')
+writer.writerow(fieldnames)
+birth_vertex = None
+
+# The persistent pairs are one after the other
+# First comes birth; immediately followed by death [Adhitya getting philosophical :P]
+
+# Iterate over all the points in the persistent diagram
+persistence_threshold_data = servermanager.Fetch(persistenceThreshold)
+# Get the number of persistent points and arcs
+num_persistent_threshold_points = persistenceThreshold.GetDataInformation().GetNumberOfPoints()
+
+for index in range(num_persistent_threshold_points):
+	vertex_id = persistence_threshold_data.GetPointData().GetArray('VertexIdentifier').GetValue(index)
+
+	# If index is even, we are processing death; else just store attributes of birth
+	# When death occurs, find persistence and moksha.
+	if index & 1:
+		death_vertex = vertex_id
+		content = [birth_vertex, death_vertex]
+		writer.writerow(content)
+	else:
+		birth_vertex = vertex_id
+
+pairs_file.close()
+
+# Write Merge Tree according to simplification
+vtk_data = servermanager.Fetch(vtkFile)
+
+# Write the Merge Tree to file
+tree_file = open('/home/nagarjun/Desktop/bitbucket/editdistancemergetree/tree-tv_101.csv', 'w')
+fieldnames = ['Node:0', 'Node:1', 'Scalar:0', 'Scalar:1']
+writer = csv.writer(tree_file, delimiter=',')
+writer.writerow(fieldnames)	
+
+previous_critical_index = None
+previous_critical_scalar = None
+
+# Get bounds of input scalar field
+bounds = vtkFile.GetDataInformation().GetBounds()
+[x_min,x_max,y_min,y_max,z_min,z_max]=bounds
+
+x_dim = int(x_max - x_min + 1)
+y_dim = int(y_max - y_min + 1)
+z_dim = int(z_max - z_min + 1)
+
+# Get data of arcs 
+arcs_data = servermanager.Fetch(contourForest,idx=1)
+num_critical = arcs_data.GetNumberOfPoints()
+
+# Every couple of points constitute an arc
+for index in range(num_critical):
+	[x,y,z] = arcs_data.GetPoints().GetPoint(index)
+	x += int(abs(x_min))
+	y += int(abs(y_min))
+	z += int(abs(z_min))
+	vertex_index = int(z * x_dim * y_dim + y * x_dim + x)
+	vertex_scalar = vtk_data.GetPointData().GetArray('volume_scalars').GetValue(vertex_index)
+
+	if index & 1:
+		content = [previous_critical_index, vertex_index, previous_critical_scalar, vertex_scalar]	
+		writer.writerow(content)
+	else:
+		previous_critical_index = vertex_index
+		previous_critical_scalar = vertex_scalar
+
+tree_file.close()
+
+print datetime.now() - startTime, 'Done! :)'
+
+#os._exit(0)

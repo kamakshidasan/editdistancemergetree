@@ -1,1 +1,3 @@
-Make persistence-simplified-merge-tree.py generic for inputs
+- Make persistence-simplified-merge-tree.py generic for inputs [according to path and run.py]
+- Remove hardcoded paths and replace them with relative ones [Find nagarjun! :P]
+- Convert Gaussian vtk files to vti within Java code itself [change writing format]
