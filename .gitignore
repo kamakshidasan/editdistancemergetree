@@ -1,4 +1,7 @@
 input/
 output/
+trees/
+pairs/
+screenshots/
 *.pyc
 *.Rhistory

@@ -5,12 +5,22 @@
 from paraview.simple import *
 import csv, os
 from datetime import datetime
+from helper import *
 
+# start timer
 startTime = datetime.now()
 
+# initialize Path variables
+# file name with extension
+full_file_name = 'adhitya.vtk'
+parent_path = cwd()
+data_path = get_input_path(parent_path)
+file_path = join_file_path(data_path, full_file_name)
+file_name = get_file_name(full_file_name)
+
 # create a new 'Legacy VTK Reader'
-vtkFile = LegacyVTKReader(FileNames=['/home/nagarjun/Desktop/bitbucket/editdistancemergetree/persistence/input/tv_102.vtk'])
-min_persistence = 0.0
+vtkFile = LegacyVTKReader(FileNames=[file_path])
+simplification_percentage = 3
 
 # show data in view
 renderView1 = GetActiveViewOrCreate('RenderView')
@@ -66,7 +76,8 @@ for index in range(num_persistent_cells):
 persistenceThreshold = Threshold(Input=persistenceDiagram)
 persistenceThreshold.Scalars = ['CELLS', 'Persistence']
 
-# filter all persistent pairs above minimum persistence threshold 
+# filter all persistent pairs above minimum persistence threshold
+min_persistence = (simplification_percentage *  max_persistence) / 100.0
 persistenceThreshold.ThresholdRange = [min_persistence, max_persistence]
 persistenceThresholdDisplay = Show(persistenceThreshold, renderView2)
 
@@ -85,7 +96,7 @@ extractSurface1Display = Show(extractSurface1, renderView1)
 Hide(cleantoGrid1, renderView1)
 
 # create a new 'TTK TopologicalSimplification'
-tTKTopologicalSimplification1 = TTKTopologicalSimplification(Domain=extractSurface1,
+tTKTopologicalSimplification1 = TTKTopologicalSimplification(Domain=cleantoGrid1,
     Constraints=persistenceThreshold)
 tTKTopologicalSimplification1.UseInputOffsetField = 1
 tTKTopologicalSimplification1Display = Show(tTKTopologicalSimplification1, renderView1)
@@ -97,6 +108,7 @@ contourForest.UseInputOffsetField = 1
 contourForest.TreeType = 'Split Tree'
 contourForest.ArcSampling = 0
 contourForest.ArcSmoothing = 100.0
+tree_type = get_tree_type(contourForest.TreeType)
 
 # show Nodes data in view
 contourForestDisplayNodes = Show(contourForest, renderView1)
@@ -160,7 +172,10 @@ layout2.AssignView(6, spreadSheetView1)
 contourForestDisplayNodes = Show(contourForest, spreadSheetView1)
 
 # Write persistent pairs after thresholding to file
-pairs_file = open('/home/nagarjun/Desktop/bitbucket/editdistancemergetree/pairs-tv_101.csv', 'w')
+pairs_file_arguments = [tree_type, PAIRS_INFIX, file_name, CSV_EXTENSION]
+pairs_file_path = get_output_path(file_path, pairs_file_arguments, folder_name = PAIRS_FOLDER)
+
+pairs_file = open(pairs_file_path, 'w')
 fieldnames = ['Birth', 'Death']
 writer = csv.writer(pairs_file, delimiter=',')
 writer.writerow(fieldnames)
@@ -192,7 +207,10 @@ pairs_file.close()
 vtk_data = servermanager.Fetch(vtkFile)
 
 # Write the Merge Tree to file
-tree_file = open('/home/nagarjun/Desktop/bitbucket/editdistancemergetree/tree-tv_101.csv', 'w')
+tree_file_arguments = [tree_type, TREE_INFIX, file_name, CSV_EXTENSION]
+tree_file_path = get_output_path(file_path, tree_file_arguments, folder_name = TREES_FOLDER)
+
+tree_file = open(tree_file_path, 'w')
 fieldnames = ['Node:0', 'Node:1', 'Scalar:0', 'Scalar:1']
 writer = csv.writer(tree_file, delimiter=',')
 writer.writerow(fieldnames)	
@@ -230,6 +248,11 @@ for index in range(num_critical):
 
 tree_file.close()
 
+# take screenshot of scalar field
+screen_file_arguments = [tree_type, SCREENSHOT_INFIX, file_name, PNG_EXTENSION]
+screen_file_path = get_output_path(file_path, screen_file_arguments, folder_name = SCREENSHOT_FOLDER)
+SaveScreenshot(screen_file_path, magnification=1, quality=100, view=renderView1)
+
 print datetime.now() - startTime, 'Done! :)'
 
-#os._exit(0)
+os._exit(0)

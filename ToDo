@@ -1,3 +1,5 @@
-- Make persistence-simplified-merge-tree.py generic for inputs [according to path and run.py]
-- Remove hardcoded paths and replace them with relative ones [Find nagarjun! :P]
+- Remove hardcoded paths and replace them with relative ones in get-persistence-fast.py [Find nagarjun! :P]
 - Convert Gaussian vtk files to vti within Java code itself [change writing format]
+- Make a file with a description of each script/folder
+- Merge all helper files
+- In helper - If folder not present create it instead of throwing an error [create_output_folder already exists - Rename?]
