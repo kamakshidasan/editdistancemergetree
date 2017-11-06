@@ -16,7 +16,7 @@ TREE_INFIX = '-tree-'
 NODES_INFIX = '-nodes-'
 ARCS_INFIX = '-arcs-'
 SCREENSHOT_INFIX = '-screenshot-'
-EDIT_DISTANCE_RESULT = 'edit-distance-result'
+EDIT_DISTANCE_RESULT = 'results'
 
 INPUT_FOLDER = 'input'
 OUTPUT_FOLDER = 'output'

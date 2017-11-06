@@ -25,7 +25,8 @@ def print_statement():
 			statement += 'python edit-distance.py tv_'+str(count) + ' tv_'+str(count-1) + '\n'
 			#statement += 'python edit-distance.py tv_'+str(count) + ' tv_1'+ '\n'
 			count+=1
-	return statement
+
+
 
 for i in range(0, cores):
 	statement = print_statement()

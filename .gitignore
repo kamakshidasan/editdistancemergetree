@@ -9,6 +9,7 @@ screenshots/
 scripts/
 trees/
 output/
+results/
 *.pyc
 *.Rhistory
 results.csv
