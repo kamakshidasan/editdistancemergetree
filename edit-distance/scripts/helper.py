@@ -13,7 +13,10 @@ FIELD_DATA_SUFFIX = '-field_data'
 
 PAIRS_INFIX = '-pairs-'
 TREE_INFIX = '-tree-'
+NODES_INFIX = '-nodes-'
+ARCS_INFIX = '-arcs-'
 SCREENSHOT_INFIX = '-screenshot-'
+EDIT_DISTANCE_RESULT = 'edit-distance-result'
 
 INPUT_FOLDER = 'input'
 OUTPUT_FOLDER = 'output'
@@ -21,11 +24,17 @@ PAIRS_FOLDER = 'pairs'
 TREES_FOLDER = 'trees'
 SCRIPTS_FOLDER = 'scripts'
 SCREENSHOT_FOLDER = 'screenshots'
+INTERMEDIATE_FOLDER = 'intermediate'
+PERSISTENCE_FOLDER = 'persistence'
+DICTIONARY_FOLDER = 'dictionary'
+RESULTS_FOLDER = 'results'
 
 PYTHON_COMMAND = 'python'
 PARAVIEW_COMMAND = 'paraview'
 
 COMPUTE_SCRIPT = 'compute.py'
+COMPUTE_INTERMEDIATE_SCRIPT = 'compute-intermediate.py'
+SPLIT_MAKE_GRAPH_SCRIPT = 'split-make-graph-left.py'
 
 # get working directory and add '/' at the end
 def cwd():
@@ -64,6 +73,9 @@ def get_file_extension(file_path):
 
 def get_parent_path(file_path):
 	return os.path.abspath(os.path.join(file_path, os.pardir))
+
+def get_folder(name):
+	return get_output_path(cwd(), [], folder_name=name)
 
 def get_input_path(file_path):
 	return os.path.join(get_parent_path(file_path), INPUT_FOLDER)
@@ -109,6 +121,8 @@ def run_python_script(script_name, arguments):
 	# Add all the arguments to the command
 	for argument in arguments:
 		command += ' ' + argument
+	
+	print command
 	os.system(command)
 	
 # You can't send in arguments here!

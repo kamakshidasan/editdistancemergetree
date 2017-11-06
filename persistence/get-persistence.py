@@ -8,7 +8,7 @@ from helper import *
 #### disable automatic camera reset on 'Show'
 paraview.simple._DisableFirstRenderCameraReset()
 
-file_path = '/home/raghavendra/Desktop/persistence-distances/persistence/input/tv_3.vtk'
+file_path = '/home/nagarjun/Desktop/bitbucket/editdistancemergetree/persistence/input/tv_1.vtk'
 persistence_theshold = 0.1
 
 file_name = get_file_name(file_path)

@@ -3,3 +3,5 @@
 - Make a file with a description of each script/folder
 - Merge all helper files
 - In helper - If folder not present create it instead of throwing an error [create_output_folder already exists - Rename?]
+- Add Persistence Pair in dot file
+

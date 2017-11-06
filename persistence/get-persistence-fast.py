@@ -7,8 +7,8 @@ import subprocess
 from helper import *
 
 # Input file path for which persistence diagram should be computed
-#file_path = '/home/raghavendra/Desktop/persistence-distances/persistence/input/adhitya.vtk'
-file_path = '/home/nagarjun/Desktop/bitbucket/editdistancemergetree/persistence/input/adhitya.vtk'
+#file_path = '/home/nagarjun/Desktop/persistence-distances/persistence/input/adhitya.vtk'
+file_path = '/home/nagarjun/Desktop/bitbucket/editdistancemergetree/persistence/input/tv_176.vtk'
 
 # Only pairs having persistence above this theshold will be considered
 persistence_theshold = 0.0
@@ -81,8 +81,12 @@ for index in range(num_persistent_points):
 
 		if persistence > persistence_theshold:
 			content = [0, death_scalar, birth_scalar]
-			writer.writerow(content)
-			print round(death_scalar, 3), round(birth_scalar, 3), round(persistence, 3)
+
+			if (birth_type == 0 or death_type == 0):
+				writer.writerow(content)
+				print round(death_scalar, 3), round(birth_scalar, 3), round(persistence, 3), vertex_type
+			else:
+				print "Discarded: ", death_vertex, birth_vertex
 	
 	# Store for next time
 	else:
@@ -93,4 +97,4 @@ for index in range(num_persistent_points):
 pairs_file.close()
 
 # Close Paraview instance
-os._exit(0)
+#os._exit(0)

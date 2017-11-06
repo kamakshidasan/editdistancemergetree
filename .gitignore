@@ -1,7 +1,14 @@
+dictionary/
+graph/
+images/
 input/
-output/
-trees/
+intermediate/
 pairs/
+persistence/
 screenshots/
+scripts/
+trees/
+output/
 *.pyc
 *.Rhistory
+results.csv
