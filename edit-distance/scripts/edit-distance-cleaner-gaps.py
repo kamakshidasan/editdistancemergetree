@@ -97,15 +97,6 @@ def isComputedEarlier(dictionary, i1, i, j1, j):
 	# simple check to see if value of key is not zero
 	return bool(dictionary[i1][i][j1][j])
 
-# Create entry in sequence dictionaries for tracing back
-def createSequenceEntry(dictionary, case_index, i1, i, j1, j):
-	if(case_index == 0):
-		dictionary[i1][i][j1][j] = [0, i1, i - 1, j1, j - 1]
-	elif (case_index == 1):
-		dictionary[i1][i][j1][j] = [1, i1, i, j1, j]
-	else:
-		dictionary[i1][i][j1][j] = [2, i1, i, j1, j]
-
 def Qf(i1, i, j1, j):
 	#print i1, i, j1, j
 
@@ -203,7 +194,6 @@ def Q1f(i1, i, j1, j):
 		for k in range(j1, j + 1):
 
 			# Note: left child of parent(i) has index parent(i) + 1
-			
 			# For some k in [j1, j]; with parent(i) being a gap node, 
 			# the subforest T1[i1][parent(i)] is matched to a subforest T2[j1][k]
 			# therefore, subtree rooted at [parent(i) + 1] will be matched with
@@ -214,12 +204,10 @@ def Q1f(i1, i, j1, j):
 
 			# store the values for each case
 			cases = (minimum, first + zeroth + gap1(i))
-
 			# store the case index first [whatever that means :P]
 			case_index = cases.index(min(cases))
 			# only then does the index of k change
 			if case_index == 1: minimum_k = k
-
 			minimum = min(cases)
 
 		# if [parent(i) does not exist] or [parent(i) exists and is not a gap node]
@@ -287,7 +275,6 @@ def Q2f(i1, i, j1, j):
 		for k in range(i1, i + 1):
 
 			# Note: left child of parent(j) has index parent(j) + 1
-			
 			# For some k in [i1, i]; with parent(j) being a gap node, 
 			# the subforest T1[i1][k] is matched to a subforest T2[j1][parent(j)]
 			# therefore, subtree rooted at [parent(j) + 1] will be matched with
@@ -298,7 +285,6 @@ def Q2f(i1, i, j1, j):
 
 			# store the values for each case
 			cases = (minimum, second + zeroth + gap2(j))
-
 			# store the case index first [whatever that means :P]
 			case_index = cases.index(min(cases))
 			# only then does the index of k change
