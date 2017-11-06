@@ -1,4 +1,4 @@
-import os, re, shutil
+import os, re, shutil, pickle
 
 # List of constants
 CSV_EXTENSION = '.csv'
@@ -18,6 +18,11 @@ ARCS_INFIX = '-arcs-'
 SCREENSHOT_INFIX = '-screenshot-'
 EDIT_DISTANCE_RESULT = 'results'
 
+RIGHT_NODE_PREFIX = '-right'
+PARENT_NODE_PREFIX = '-parent'
+LABEL_NODE_PREFIX = '-labels'
+DIFFERENCE_NODE_PREFIX = '-difference'
+
 INPUT_FOLDER = 'input'
 OUTPUT_FOLDER = 'output'
 PAIRS_FOLDER = 'pairs'
@@ -35,6 +40,8 @@ PARAVIEW_COMMAND = 'paraview'
 COMPUTE_SCRIPT = 'compute.py'
 COMPUTE_INTERMEDIATE_SCRIPT = 'compute-intermediate.py'
 SPLIT_MAKE_GRAPH_SCRIPT = 'split-make-graph-left.py'
+
+INFINITY = float('inf')
 
 # get working directory and add '/' at the end
 def cwd():
@@ -140,6 +147,17 @@ def run_jar(jar_file, arguments):
 		command += ' ' + argument
 	os.system(command)
 
+def get_dictionary(file_path, arguments):
+	# I know that the extension is always TXT
+	arguments.append(TXT_EXTENSION)
+
+	dictionary_path = get_output_path(file_path, arguments, folder_name = DICTIONARY_FOLDER)
+
+	with open(dictionary_path, 'rb') as handle:
+		current_dictionary = pickle.loads(handle.read())
+	
+	return current_dictionary
+
 def get_folder(file_path, folder_name = None):
 	# This will give you a path with the folder name appended	
 	output_path = get_output_path(file_path, [], folder_name = folder_name)
@@ -166,3 +184,10 @@ def sort_files(s):
 	if unicode(index, 'utf-8').isnumeric():
 		return int(index)
 	return float('inf')
+
+# Pretty print the time taken
+def pretty_print_time(seconds):
+	m, s = divmod(seconds, 60)
+	h, m = divmod(m, 60)
+	time_taken =  "%d:%02d:%02d" % (h, m, s)
+	return time_taken
