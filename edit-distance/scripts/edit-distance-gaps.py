@@ -159,7 +159,7 @@ def Q1f(i1, i, j1, j):
 		return Q1[i1][i][j1][j]
 	else:
 		# initialize a minimum
-		minimum = float('inf')
+		minimum = INFINITY
 
 		# if parent(i) is a gap node and i is its right child
 		# then i is continuing a preexisting gap, hence gets penalized
