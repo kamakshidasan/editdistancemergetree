@@ -130,19 +130,15 @@ def Qf(i1, i, j1, j):
 		# j is a gap point
 		second = Q2f(i1, i, j1, j)
 
-		# take minimum of all three cases
-		cases = (zeroth, first, second)
-		minimum = min(cases)
-
 		# store minimum value of all three cases
-		Q[i1][i][j1][j] = minimum
+		Q[i1][i][j1][j] = min(zeroth, first, second)
 
 		#print 'Q', i1, i, j1, j, Q[i1][i][j1][j]
 
-		# Store the case index [whatever that means!]
 		# Adhitya: thought about optimising and decided not to. 
 		# Adhitya from future: Do *not* try to optimise!
-
+		cases = (zeroth, first, second)
+		# Store the case index [whatever that means!]
 		case_index = cases.index(min(cases))
 		# Create a entry for this new sequence element
 		createEntry(S, i1, i, j1, j)
@@ -345,13 +341,13 @@ csvfile.write(timestep_value + ',' + str(difference) +'\n')
 csvfile.close()
 
 # Save intermediate matrices
-save_matrix(Q, filename1, Q_IDENTIFIER)
-save_matrix(Q1, filename1, Q1_IDENTIFIER)
-save_matrix(Q2, filename1, Q2_IDENTIFIER)
+save_matrix(Q, [filename1, filename2], Q_IDENTIFIER)
+save_matrix(Q1, [filename1, filename2], Q1_IDENTIFIER)
+save_matrix(Q2, [filename1, filename2], Q2_IDENTIFIER)
 
-save_matrix(S, filename1, S_IDENTIFIER)
-save_matrix(S1, filename1, S1_IDENTIFIER)
-save_matrix(S2, filename1, S2_IDENTIFIER)
+save_matrix(S, [filename1, filename2], S_IDENTIFIER)
+save_matrix(S1, [filename1, filename2], S1_IDENTIFIER)
+save_matrix(S2, [filename1, filename2], S2_IDENTIFIER)
 
 print 'Difference: ', difference, 'Time Taken: ', time_taken
 os.system('date')

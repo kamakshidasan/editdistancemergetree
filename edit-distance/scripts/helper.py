@@ -104,6 +104,10 @@ def get_input_path(file_path):
 def get_tree_type(tree_type):
 	return tree_type.split(' ')[0].lower()
 
+# join two strings
+def join_strings(strings):
+	return '-'.join(strings)
+
 # Get a new filename in the output directory
 # This takes in a file from input directory and gives out a string with ../output/file_name
 # arguments can be sent in a list to the aforementioned string
@@ -161,15 +165,28 @@ def run_jar(jar_file, arguments):
 	os.system(command)
 
 def get_dictionary(file_path, arguments):
-	# I know that the extension is always TXT
+	# extension is always TXT
 	arguments.append(TXT_EXTENSION)
-
 	dictionary_path = get_output_path(file_path, arguments, folder_name = DICTIONARY_FOLDER)
+	with open(dictionary_path, 'rb') as handle:
+		current_dictionary = pickle.loads(handle.read())
+	
+	return current_dictionary
+
+def get_matrix(file_path, arguments):
+	# extension is always BIN
+	arguments.append(BIN_EXTENSION)
+	
+	# combine the filenames together
+	arguments[0:2] = [join_strings(arguments[0:2])]
+
+	dictionary_path = get_output_path(file_path, arguments, folder_name = MATRICES_FOLDER)
 
 	with open(dictionary_path, 'rb') as handle:
 		current_dictionary = pickle.loads(handle.read())
 	
 	return current_dictionary
+
 
 def get_folder(file_path, folder_name = None):
 	# This will give you a path with the folder name appended	
@@ -179,7 +196,6 @@ def get_folder(file_path, folder_name = None):
 # Create an output folder if it does not exist
 def create_output_folder(file_path):
 	output_path = get_output_folder(file_path)
-
 	# Check if it exists
 	if not os.path.exists(output_path):
 		os.makedirs(output_path)
@@ -212,7 +228,7 @@ def save_dictionary(dictionary, file_path):
 		pickle.dump(dictionary, handle)
 
 # used in edit-distance to save intermediate matrices
-def save_matrix(dictionary, filename, identifier):
-	matrix_file_arguments = [filename, identifier, BIN_EXTENSION]
+def save_matrix(dictionary, filenames, identifier):
+	matrix_file_arguments = [join_strings(filenames), identifier, BIN_EXTENSION]
 	matrix_file_path = get_output_path(current_path(), matrix_file_arguments, folder_name = MATRICES_FOLDER)
 	save_dictionary(dictionary, matrix_file_path)
