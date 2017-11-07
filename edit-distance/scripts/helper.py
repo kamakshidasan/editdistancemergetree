@@ -1,8 +1,9 @@
-import os, re, shutil, pickle
+import os, re, shutil, pickle, inspect
 
 # List of constants
 CSV_EXTENSION = '.csv'
 TXT_EXTENSION = '.txt'
+BIN_EXTENSION = '.bin'
 VTP_EXTENSION = '.vtp'
 PNG_EXTENSION = '.png'
 
@@ -23,6 +24,14 @@ PARENT_NODE_PREFIX = '-parent'
 LABEL_NODE_PREFIX = '-labels'
 DIFFERENCE_NODE_PREFIX = '-difference'
 
+Q_IDENTIFIER = '-Q'
+Q1_IDENTIFIER = '-Q1'
+Q2_IDENTIFIER = '-Q2'
+
+S_IDENTIFIER = '-S'
+S1_IDENTIFIER = '-S1'
+S2_IDENTIFIER = '-S2'
+
 INPUT_FOLDER = 'input'
 OUTPUT_FOLDER = 'output'
 PAIRS_FOLDER = 'pairs'
@@ -33,12 +42,12 @@ INTERMEDIATE_FOLDER = 'intermediate'
 PERSISTENCE_FOLDER = 'persistence'
 DICTIONARY_FOLDER = 'dictionary'
 RESULTS_FOLDER = 'results'
+MATRICES_FOLDER = 'matrices'
 
 PYTHON_COMMAND = 'python'
 PARAVIEW_COMMAND = 'paraview'
 
 COMPUTE_SCRIPT = 'compute.py'
-COMPUTE_INTERMEDIATE_SCRIPT = 'compute-intermediate.py'
 SPLIT_MAKE_GRAPH_SCRIPT = 'split-make-graph-left.py'
 
 INFINITY = float('inf')
@@ -46,6 +55,10 @@ INFINITY = float('inf')
 # get working directory and add '/' at the end
 def cwd():
 	return os.path.join(os.getcwd(), '')
+
+# get path of current file
+def current_path():
+	return os.path.abspath(inspect.getfile(inspect.currentframe()))
 
 # Replace a pattern with another in a file
 def replace_wildcard(fname, pat, s_after):
@@ -175,6 +188,7 @@ def create_output_folder(file_path):
 def delete_output_folder(file_path):
 	shutil.rmtree(get_output_folder(file_path))
 
+# used in run: sort files according to characters and numeric
 def sort_files(s):
 	# seperate on '_'
 	timestep, sep, index = s.partition('_')
@@ -191,3 +205,14 @@ def pretty_print_time(seconds):
 	h, m = divmod(m, 60)
 	time_taken =  "%d:%02d:%02d" % (h, m, s)
 	return time_taken
+
+# save dictionary to file
+def save_dictionary(dictionary, file_path):
+	with open(file_path, 'wb') as handle:
+		pickle.dump(dictionary, handle)
+
+# used in edit-distance to save intermediate matrices
+def save_matrix(dictionary, filename, identifier):
+	matrix_file_arguments = [filename, identifier, BIN_EXTENSION]
+	matrix_file_path = get_output_path(current_path(), matrix_file_arguments, folder_name = MATRICES_FOLDER)
+	save_dictionary(dictionary, matrix_file_path)

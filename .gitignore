@@ -9,6 +9,7 @@ screenshots/
 trees/
 output/
 results/
+matrices/
 *.pyc
 *.Rhistory
 results.csv

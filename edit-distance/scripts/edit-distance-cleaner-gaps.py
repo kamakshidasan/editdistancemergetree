@@ -344,5 +344,14 @@ timestep_value = filename1.split('tv_')[1]
 csvfile.write(timestep_value + ',' + str(difference) +'\n')
 csvfile.close()
 
+# Save intermediate matrices
+save_matrix(Q, filename1, Q_IDENTIFIER)
+save_matrix(Q1, filename1, Q1_IDENTIFIER)
+save_matrix(Q2, filename1, Q2_IDENTIFIER)
+
+save_matrix(S, filename1, S_IDENTIFIER)
+save_matrix(S1, filename1, S1_IDENTIFIER)
+save_matrix(S2, filename1, S2_IDENTIFIER)
+
 print 'Difference: ', difference, 'Time Taken: ', time_taken
 os.system('date')

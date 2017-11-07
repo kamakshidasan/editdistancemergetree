@@ -23,7 +23,7 @@ num_files = 200
 for i in range(1, num_files):
 
 	
-	compute_file = get_output_path(file_path, [COMPUTE_INTERMEDIATE_SCRIPT], folder_name = SCRIPTS_FOLDER)
+	compute_file = get_output_path(file_path, [COMPUTE_SCRIPT], folder_name = SCRIPTS_FOLDER)
 	replace_wildcard(compute_file, file_list[i-1], file_list[i])
 
 	run_paraview_script(compute_file)
