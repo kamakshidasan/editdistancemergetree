@@ -17,7 +17,7 @@ def file_replace(fname, pat, s_after):
         out.close()
         os.rename(out_fname, fname)
 
-working_directory = '/home/nagarjun/Desktop/bitbucket/editdistancemergetree/persistence/'
+working_directory = '/home/nagarjun/Desktop/bitbucket/editdistancemergetree/persistence-scripts/'
 
 file_list = os.listdir(working_directory + 'input/')
 wildcard = 'adhitya.vtk'

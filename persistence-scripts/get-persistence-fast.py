@@ -8,7 +8,7 @@ from helper import *
 
 # Input file path for which persistence diagram should be computed
 #file_path = '/home/nagarjun/Desktop/persistence-distances/persistence/input/adhitya.vtk'
-file_path = '/home/nagarjun/Desktop/bitbucket/editdistancemergetree/persistence/input/tv_176.vtk'
+file_path = '/home/nagarjun/Desktop/bitbucket/editdistancemergetree/persistence-scripts/input/tv_176.vtk'
 
 # Only pairs having persistence above this theshold will be considered
 persistence_theshold = 0.0
