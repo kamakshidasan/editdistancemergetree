@@ -73,7 +73,7 @@ def checkBadExtents2(j1, j):
 	return (j < 1 or j > size2 or j1 < 1 or j1 > size2 or j < j1)
 
 # Check for bad extents in both the trees
-def checkBadExtents(i1, i, j1, j):
+def checkGoodExtents(i1, i, j1, j):
 	t1 = not checkBadExtents1(i1, i)
 	t2 = not checkBadExtents2(j1, j)
 	return (t1, t2)
@@ -107,7 +107,7 @@ def Qf(i1, i, j1, j):
 	createEntry(Q, i1, i, j1, j)
 
 	# check if extents are fine
-	[extent1, extent2] = checkBadExtents(i1, i, j1, j)
+	[extent1, extent2] = checkGoodExtents(i1, i, j1, j)
 	
 	# Boundary Condition: if both are outside bounds, assign zero
 	if ((not extent1) and (not extent2)):
@@ -147,7 +147,8 @@ def Qf(i1, i, j1, j):
 		# Store previous element
 		if(case_index == 0):
 			message = str(i) + ' relabeled to ' + str(j)
-			S[i1][i][j1][j] = [0, i1, i - 1, j1, j - 1, message]
+			cost = relabel(i, j)
+			S[i1][i][j1][j] = [0, i1, i - 1, j1, j - 1, message, cost]
 		elif (case_index == 1):
 			message = str(i) + ' is a gap point in T1'
 			S[i1][i][j1][j] = [1, i1, i, j1, j, message]
@@ -163,7 +164,7 @@ def Q1f(i1, i, j1, j):
 	createEntry(Q1, i1, i, j1, j)
 
 	# check if extents are fine
-	[extent1, extent2] = checkBadExtents(i1, i, j1, j)
+	[extent1, extent2] = checkGoodExtents(i1, i, j1, j)
 
 	# there is a unique matching between T1[1][i] with an empty tree: we have i gap points
 	if (not extent2):
@@ -223,10 +224,12 @@ def Q1f(i1, i, j1, j):
 		createEntry(S1, i1, i, j1, j)
 		if (case_index == 0):
 			message = str(i) + ' is continuing a preexisting gap in T1'
-			S1[i1][i][j1][j] = [1, i1, i - 1, j1, j, message]
+			cost = gap1(i)
+			S1[i1][i][j1][j] = [1, i1, i - 1, j1, j, message, cost]
 		elif(case_index == 1):
 			message = str(i) + ' is starting a new gap in T1'
-			S1[i1][i][j1][j] = [0, i1, i - 1, j1, j, message]
+			cost = gap1(i)
+			S1[i1][i][j1][j] = [0, i1, i - 1, j1, j, message, cost]
 		else:
 			k = minimum_k
 			S1[i1][i][j1][j] = [[0, parent1[i] + 1, i - 1, k + 1, j], [1, i1, parent1[i], j1, k]]
@@ -240,7 +243,7 @@ def Q2f(i1, i, j1, j):
 	createEntry(Q2, i1, i, j1, j)
 
 	# check if extents are fine
-	[extent1, extent2] = checkBadExtents(i1, i, j1, j)
+	[extent1, extent2] = checkGoodExtents(i1, i, j1, j)
 
 	# it is impossible to match an empty tree with T1[1][j] such that the former ends with a gap node
 	if (not extent2):
@@ -302,10 +305,12 @@ def Q2f(i1, i, j1, j):
 		createEntry(S2, i1, i, j1, j)
 		if (case_index == 0):
 			message = str(j) + ' is continuing a preexisting gap in T2'
-			S2[i1][i][j1][j] = [2, i1, i, j1, j - 1, message]
+			cost = gap2(j)
+			S2[i1][i][j1][j] = [2, i1, i, j1, j - 1, message, cost]
 		elif(case_index == 1):
 			message = str(j) + ' is starting a new gap in T2'
-			S2[i1][i][j1][j] = [0, i1, i, j1, j - 1, message]
+			cost = gap2(j)
+			S2[i1][i][j1][j] = [0, i1, i, j1, j - 1, message, cost]
 		else:
 			k = minimum_k
 			S2[i1][i][j1][j] = [[0, k + 1, i, parent2[j] + 1, j - 1], [2, i1, k, j1, parent2[j]]]

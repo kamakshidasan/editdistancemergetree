@@ -68,7 +68,7 @@ def checkBadExtents2(j1, j):
 	return (j < 1 or j > size2 or j1 < 1 or j1 > size2 or j < j1)
 
 # Check for bad extents in both the trees
-def checkBadExtents(i1, i, j1, j):
+def checkGoodExtents(i1, i, j1, j):
 	t1 = not checkBadExtents1(i1, i)
 	t2 = not checkBadExtents2(j1, j)
 	return (t1, t2)
@@ -99,7 +99,7 @@ def Qf(i1, i, j1, j):
 	createEntry(Q, i1, i, j1, j)
 
 	# check if extents are fine
-	[extent1, extent2] = checkBadExtents(i1, i, j1, j)
+	[extent1, extent2] = checkGoodExtents(i1, i, j1, j)
 	
 	# Boundary Condition: if both are outside bounds, assign zero
 	if ((not extent1) and (not extent2)):
@@ -139,7 +139,7 @@ def Q1f(i1, i, j1, j):
 	createEntry(Q1, i1, i, j1, j)
 
 	# check if extents are fine
-	[extent1, extent2] = checkBadExtents(i1, i, j1, j)
+	[extent1, extent2] = checkGoodExtents(i1, i, j1, j)
 
 	# there is a unique matching between T1[1][i] with an empty tree: we have i gap points
 	if (not extent2):
@@ -196,7 +196,7 @@ def Q2f(i1, i, j1, j):
 	createEntry(Q2, i1, i, j1, j)
 
 	# check if extents are fine
-	[extent1, extent2] = checkBadExtents(i1, i, j1, j)
+	[extent1, extent2] = checkGoodExtents(i1, i, j1, j)
 
 	# it is impossible to match an empty tree with T1[1][j] such that the former ends with a gap node
 	if (not extent2):
