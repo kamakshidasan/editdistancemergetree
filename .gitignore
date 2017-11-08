@@ -13,3 +13,4 @@ matrices/
 *.pyc
 *.Rhistory
 results.csv
+.DS_Store

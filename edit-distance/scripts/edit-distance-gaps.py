@@ -262,7 +262,7 @@ def Q2f(i1, i, j1, j):
 		# initialize a minimum
 		minimum = INFINITY
 
-		# initialize a minimum index	
+		# initialize a minimum index
 		minimum_k = None
 
 		for k in range(i1, i + 1):
