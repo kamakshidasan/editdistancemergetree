@@ -184,7 +184,7 @@ def Q1f(i1, i, j1, j):
 		# then i is continuing a preexisting gap, hence gets penalized
 		first = Q1f(i1, i - 1, j1, j) + gap1(i)
 
-		Q1[i1][i][j1][j] = min(zeroth, first, minimum)
+		Q1[i1][i][j1][j] = min(first, zeroth, minimum)
 		#print 'Q1', i1, i, j1, j, Q1[i1][i][j1][j]
 		return Q1[i1][i][j1][j]
 
@@ -240,7 +240,7 @@ def Q2f(i1, i, j1, j):
 		# then j is continuing a preexisting gap, hence gets penalized
 		second = Q2f(i1, i, j1, j - 1) + gap2(j)
 
-		Q2[i1][i][j1][j] = min(zeroth, second, minimum)
+		Q2[i1][i][j1][j] = min(second, zeroth, minimum)
 		#print 'Q2', i1, i, j1, j, Q2[i1][i][j1][j]
 		return Q2[i1][i][j1][j]
 

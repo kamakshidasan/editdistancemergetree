@@ -97,9 +97,12 @@ def isComputedEarlier(dictionary, i1, i, j1, j):
 	# simple check to see if value of key is not zero
 	return bool(dictionary[i1][i][j1][j])
 
-def Qf(i1, i, j1, j):
-	#print i1, i, j1, j
+# Return index of minimum if there are multiple minima present
+def locate_minimum(elements):
+	smallest = min(elements)
+	return min([index for index, element in enumerate(elements) if smallest == element])
 
+def Qf(i1, i, j1, j):
 	# create an empty key if already not present
 	createEntry(Q, i1, i, j1, j)
 
@@ -118,7 +121,6 @@ def Qf(i1, i, j1, j):
 
 	# if already created earlier, return that value instead of computing again
 	if (isComputedEarlier(Q, i1, i, j1, j)):
-		#print 'Q', i1, i, j1, j, Q[i1][i][j1][j]
 		return Q[i1][i][j1][j]
 	else:
 		# None of i or j is a gap point, then i must be matched to j
@@ -137,25 +139,26 @@ def Qf(i1, i, j1, j):
 
 		# Adhitya: thought about optimising and decided not to. 
 		# Adhitya from future: Do *not* try to optimise!
-		cases = (zeroth, first, second)
+		cases = [zeroth, first, second]
 		# Store the case index [whatever that means!]
-		case_index = cases.index(min(cases))
+		case_index = locate_minimum(cases)
 		# Create a entry for this new sequence element
 		createEntry(S, i1, i, j1, j)
 		# Store previous element
 		if(case_index == 0):
-			S[i1][i][j1][j] = [0, i1, i - 1, j1, j - 1]
+			message = str(i) + ' relabeled to ' + str(j)
+			S[i1][i][j1][j] = [0, i1, i - 1, j1, j - 1, message]
 		elif (case_index == 1):
-			S[i1][i][j1][j] = [1, i1, i, j1, j]
+			message = str(i) + ' is a gap point in T1'
+			S[i1][i][j1][j] = [1, i1, i, j1, j, message]
 		else:
-			S[i1][i][j1][j] = [2, i1, i, j1, j]
+			message = str(j) + ' is a gap point in T2'
+			S[i1][i][j1][j] = [2, i1, i, j1, j, message]
 
 		return Q[i1][i][j1][j]
 
 # i is a gap point
 def Q1f(i1, i, j1, j):
-	#print i1, i, j1, j
-
 	# create an empty key if already not present
 	createEntry(Q1, i1, i, j1, j)
 
@@ -165,18 +168,15 @@ def Q1f(i1, i, j1, j):
 	# there is a unique matching between T1[1][i] with an empty tree: we have i gap points
 	if (not extent2):
 		Q1[i1][i][j1][j] = gap1(i) * i
-		#print 'Q1', i1, i, j1, j, Q1[i1][i][j1][j]
 		return Q1[i1][i][j1][j]
 
 	# it is impossible to match an empty tree with T2[1][j] such that the former ends with a gap node
 	elif (not extent1):
 		Q1[i1][i][j1][j] = INFINITY
-		#print 'Q1', i1, i, j1, j, Q1[i1][i][j1][j]
 		return Q1[i1][i][j1][j]
 
 	# if already created earlier, return that value instead of computing again
 	if (isComputedEarlier(Q1, i1, i, j1, j)):
-		#print 'Q1', i1, i, j1, j, Q1[i1][i][j1][j]
 		return Q1[i1][i][j1][j]
 	else:
 		# initialize a minimum
@@ -199,9 +199,9 @@ def Q1f(i1, i, j1, j):
 			first = Q1f(i1, parent1[i], j1, k)
 
 			# store the values for each case
-			cases = (minimum, first + zeroth + gap1(i))
+			cases = [minimum, first + zeroth + gap1(i)]
 			# store the case index first [whatever that means :P]
-			case_index = cases.index(min(cases))
+			case_index = locate_minimum(cases)
 			# only then does the index of k change
 			if case_index == 1: minimum_k = k
 			minimum = min(cases)
@@ -214,17 +214,19 @@ def Q1f(i1, i, j1, j):
 		# then i is continuing a preexisting gap, hence gets penalized
 		first = Q1f(i1, i - 1, j1, j) + gap1(i)
 
-		Q1[i1][i][j1][j] = min(zeroth, first, minimum)
+		Q1[i1][i][j1][j] = min(first, zeroth, minimum)
 
-		# store the sequence
-		cases = (zeroth, first, minimum)
-		case_index = cases.index(min(cases))
+		# store the sequence [This preferential order is important]
+		cases = [first, zeroth, minimum]
+		case_index = locate_minimum(cases)
 		# Create a entry for this new sequence element
 		createEntry(S1, i1, i, j1, j)
-		if(case_index == 0):
-			S1[i1][i][j1][j] = [0, i1, i - 1, j1, j]
-		elif (case_index == 1):
-			S1[i1][i][j1][j] = [1, i1, i - 1, j1, j]
+		if (case_index == 0):
+			message = str(i) + ' is continuing a preexisting gap in T1'
+			S1[i1][i][j1][j] = [1, i1, i - 1, j1, j, message]
+		elif(case_index == 1):
+			message = str(i) + ' is starting a new gap in T1'
+			S1[i1][i][j1][j] = [0, i1, i - 1, j1, j, message]
 		else:
 			k = minimum_k
 			S1[i1][i][j1][j] = [[0, parent1[i] + 1, i - 1, k + 1, j], [1, i1, parent1[i], j1, k]]
@@ -234,8 +236,6 @@ def Q1f(i1, i, j1, j):
 
 # j is a gap point
 def Q2f(i1, i, j1, j):
-	#print i1, i, j1, j
-
 	# create an empty key if already not present
 	createEntry(Q2, i1, i, j1, j)
 
@@ -245,18 +245,15 @@ def Q2f(i1, i, j1, j):
 	# it is impossible to match an empty tree with T1[1][j] such that the former ends with a gap node
 	if (not extent2):
 		Q2[i1][i][j1][j] = INFINITY
-		#print 'Q2', i1, i, j1, j, Q2[i1][i][j1][j]
 		return Q2[i1][i][j1][j]
 
 	# there is a unique matching between T2[1][i] with an empty tree: we have j gap points
 	elif (not extent1):
 		Q2[i1][i][j1][j] = gap2(j) * j
-		#print 'Q2', i1, i, j1, j, Q2[i1][i][j1][j]
 		return Q2[i1][i][j1][j]
 
 	# if already created earlier, return that value instead of computing again
 	if (isComputedEarlier(Q2, i1, i, j1, j)):
-		#print 'Q2', i1, i, j1, j, Q2[i1][i][j1][j]
 		return Q2[i1][i][j1][j]
 
 	# if parent(j) is a gap node and j is its right child
@@ -280,9 +277,9 @@ def Q2f(i1, i, j1, j):
 			second = Q2f(i1, k, j1, parent2[j])
 
 			# store the values for each case
-			cases = (minimum, second + zeroth + gap2(j))
+			cases = [minimum, second + zeroth + gap2(j)]
 			# store the case index first [whatever that means :P]
-			case_index = cases.index(min(cases))
+			case_index = locate_minimum(cases)
 			# only then does the index of k change
 			if case_index == 1: minimum_k = k
 
@@ -296,17 +293,19 @@ def Q2f(i1, i, j1, j):
 		# then j is continuing a preexisting gap, hence gets penalized
 		second = Q2f(i1, i, j1, j - 1) + gap2(j)
 
-		Q2[i1][i][j1][j] = min(zeroth, second, minimum)
+		Q2[i1][i][j1][j] = min(second, zeroth, minimum)
 
-		# store the sequence
-		cases = (zeroth, second, minimum)
-		case_index = cases.index(min(cases))
+		# store the sequence [This preferential order is important]
+		cases = [second, zeroth, minimum]
+		case_index = locate_minimum(cases)
 		# Create a entry for this new sequence element
 		createEntry(S2, i1, i, j1, j)
-		if(case_index == 0):
-			S2[i1][i][j1][j] = [0, i1, i, j1, j - 1]
-		elif (case_index == 1):
-			S2[i1][i][j1][j] = [2, i1, i, j1, j - 1]
+		if (case_index == 0):
+			message = str(j) + ' is continuing a preexisting gap in T2'
+			S2[i1][i][j1][j] = [2, i1, i, j1, j - 1, message]
+		elif(case_index == 1):
+			message = str(j) + ' is starting a new gap in T2'
+			S2[i1][i][j1][j] = [0, i1, i, j1, j - 1, message]
 		else:
 			k = minimum_k
 			S2[i1][i][j1][j] = [[0, k + 1, i, parent2[j] + 1, j - 1], [2, i1, k, j1, parent2[j]]]

@@ -2,15 +2,48 @@ import os, time
 import itertools, sys, pickle, inspect
 from helper import *
 
+# Remove the try-catch once testing is complete
+try:
+	__file__
+except:
+	sys.argv = [sys.argv[0], 'tv_102', 'tv_103']
+	
+def printIndices(dictionary, k):
+	try:
+		try:
+			print k
+		except IndexError:
+			# This should only happen only during the first call of this function
+			pass
+			
+		next_comparison = dictionary[k[1]][k[2]][k[3]][k[4]]
+
+		return next_comparison
+	except:
+		print 'Done! :)'
+		return None
+
+def traverse(dictionary, indices):
+	indices = printIndices(dictionary, indices)
+	if indices is None:
+		return
+	if len(indices) == 2:
+		print 'Something is about to happen! :|'
+	if (indices[0] == 0):
+		traverse(S,indices)
+	elif(indices[0] == 1):
+		traverse(S1, indices)
+	elif(indices[0] == 2):
+		traverse(S2, indices)
+	else:
+		print 'Error!'
+	
+# Get the paths
+file_path = os.path.abspath(inspect.getfile(inspect.currentframe()))
+
 # Take the names of files as arguments
 filename1 =  sys.argv[1]
 filename2 = sys.argv[2]
-
-# Get the paths
-file_path = os.path.abspath(inspect.getfile(inspect.currentframe()))
-dictionary1 = get_output_path(file_path, [filename1], folder_name = DICTIONARY_FOLDER)
-dictionary2 = get_output_path(file_path, [filename2], folder_name = DICTIONARY_FOLDER)
-results_path = get_output_path(file_path, [EDIT_DISTANCE_RESULT, CSV_EXTENSION], folder_name = RESULTS_FOLDER)
 
 # Get right-most node for each node
 right1 = get_dictionary(file_path, [filename1, RIGHT_NODE_PREFIX])
@@ -33,8 +66,7 @@ size1 = len(parent1.keys())
 size2 = len(parent2.keys())
 
 # How much are we planning to compare?
-extents = [right1[1], right2[1]]
-print extents
+extents = [0, 1, right1[1], 1, right2[1]]
 
 # Get the intermediate matrices
 Q = get_matrix(file_path, [filename1, filename2, Q_IDENTIFIER])
@@ -45,4 +77,6 @@ S = get_matrix(file_path, [filename1, filename2, S_IDENTIFIER])
 S1 = get_matrix(file_path, [filename1, filename2, S1_IDENTIFIER])
 S2 = get_matrix(file_path, [filename1, filename2, S2_IDENTIFIER])
 
-print S # lol.
+
+# Start tracing back from the back
+traverse(S, extents)
