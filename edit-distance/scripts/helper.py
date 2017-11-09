@@ -6,12 +6,14 @@ TXT_EXTENSION = '.txt'
 BIN_EXTENSION = '.bin'
 VTP_EXTENSION = '.vtp'
 PNG_EXTENSION = '.png'
+DOT_EXTENSION = '.dot'
 
 PAIRS_INFIX = '-pairs-'
 TREE_INFIX = '-tree-'
 NODES_INFIX = '-nodes-'
 ARCS_INFIX = '-arcs-'
 SCREENSHOT_INFIX = '-screenshot-'
+COMPARE_PREFIX = 'compare-'
 EDIT_DISTANCE_RESULT = 'results'
 
 RIGHT_NODE_PREFIX = '-right'
@@ -40,12 +42,15 @@ PERSISTENCE_FOLDER = 'persistence'
 DICTIONARY_FOLDER = 'dictionary'
 RESULTS_FOLDER = 'results'
 MATRICES_FOLDER = 'matrices'
+COMPARE_GRAPHS_FOLDER = 'compare-graphs'
+COMPARE_IMAGES_FOLDER = 'compare-images'
 
 PYTHON_COMMAND = 'python'
 PARAVIEW_COMMAND = 'paraview'
 
 COMPUTE_SCRIPT = 'compute.py'
 SPLIT_MAKE_GRAPH_SCRIPT = 'split-make-graph-left.py'
+MAKE_IMAGE_SCRIPT = 'make-image.sh'
 
 INFINITY = float('inf')
 
@@ -169,6 +174,14 @@ def run_python_script(script_name, arguments):
 def run_paraview_script(script_name):
 	# paraview --script= <script_name>
 	command = PARAVIEW_COMMAND + ' --script=' + script_name
+	os.system(command)
+
+def run_shell_script(script_name, arguments):
+	command = './' + script_name
+
+	for argument in arguments:
+		command += ' ' + argument
+	
 	os.system(command)
 
 def run_jar(jar_file, arguments):

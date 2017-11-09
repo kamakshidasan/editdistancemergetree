@@ -26,8 +26,8 @@ def print_statement():
 	statement = ""
 	for j in range(0, 50):
 		if count <= highest:
-			statement += 'python edit-distance-gaps.py tv_'+str(count) + ' tv_'+str(count-1) + '\n'
 			#statement += 'python edit-distance.py tv_'+str(count) + ' tv_1'+ '\n'
+			statement += 'python edit-distance-gaps.py tv_'+str(count) + ' tv_'+str(count-1) + '\n'
 			statement += 'python print-gaps.py tv_'+str(count) + ' tv_'+str(count-1) + '\n'
 			count+=1
 
