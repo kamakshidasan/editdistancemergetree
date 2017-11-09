@@ -148,15 +148,15 @@ def Qf(i1, i, j1, j):
 		if(case_index == 0):
 			message = str(i) + ' relabeled to ' + str(j)
 			cost = relabel(i, j)
-			S[i1][i][j1][j] = [0, i1, i - 1, j1, j - 1, message, cost]
+			S[i1][i][j1][j] = [S_MATRIX_IDENTIFIER, i1, i - 1, j1, j - 1, RELABEL_IDENTIFIER, message, cost]
 		elif (case_index == 1):
 			message = str(i) + ' is a gap point in T1'
 			cost = UNKNOWN_COST
-			S[i1][i][j1][j] = [1, i1, i, j1, j, message, cost]
+			S[i1][i][j1][j] = [S1_MATRIX_IDENTIFIER, i1, i, j1, j, T1_GENERIC_GAP_IDENTIFIER, message, cost]
 		else:
 			message = str(j) + ' is a gap point in T2'
 			cost = UNKNOWN_COST
-			S[i1][i][j1][j] = [2, i1, i, j1, j, message, cost]
+			S[i1][i][j1][j] = [S2_MATRIX_IDENTIFIER, i1, i, j1, j, T2_GENERIC_GAP_IDENTIFIER, message, cost]
 
 		return Q[i1][i][j1][j]
 
@@ -227,14 +227,14 @@ def Q1f(i1, i, j1, j):
 		if (case_index == 0):
 			message = str(i) + ' is continuing a preexisting gap in T1'
 			cost = gap1(i)
-			S1[i1][i][j1][j] = [1, i1, i - 1, j1, j, message, cost]
+			S1[i1][i][j1][j] = [S1_MATRIX_IDENTIFIER, i1, i - 1, j1, j, T1_CONTINUING_GAP_IDENTIFIER, message, cost]
 		elif(case_index == 1):
 			message = str(i) + ' is starting a new gap in T1'
 			cost = gap1(i)
-			S1[i1][i][j1][j] = [0, i1, i - 1, j1, j, message, cost]
+			S1[i1][i][j1][j] = [S_MATRIX_IDENTIFIER, i1, i - 1, j1, j, T1_STARTING_GAP_IDENTIFIER, message, cost]
 		else:
 			k = minimum_k
-			S1[i1][i][j1][j] = [[0, parent1[i] + 1, i - 1, k + 1, j], [1, i1, parent1[i], j1, k]]
+			S1[i1][i][j1][j] = [[S_MATRIX_IDENTIFIER, parent1[i] + 1, i - 1, k + 1, j], [S1_MATRIX_IDENTIFIER, i1, parent1[i], j1, k]]
 
 		#print 'Q1', i1, i, j1, j, Q1[i1][i][j1][j]
 		return Q1[i1][i][j1][j]
@@ -308,14 +308,14 @@ def Q2f(i1, i, j1, j):
 		if (case_index == 0):
 			message = str(j) + ' is continuing a preexisting gap in T2'
 			cost = gap2(j)
-			S2[i1][i][j1][j] = [2, i1, i, j1, j - 1, message, cost]
+			S2[i1][i][j1][j] = [S2_MATRIX_IDENTIFIER, i1, i, j1, j - 1, T2_CONTINUING_GAP_IDENTIFIER, message, cost]
 		elif(case_index == 1):
 			message = str(j) + ' is starting a new gap in T2'
 			cost = gap2(j)
-			S2[i1][i][j1][j] = [0, i1, i, j1, j - 1, message, cost]
+			S2[i1][i][j1][j] = [S_MATRIX_IDENTIFIER, i1, i, j1, j - 1, T2_STARTING_GAP_IDENTIFIER, message, cost]
 		else:
 			k = minimum_k
-			S2[i1][i][j1][j] = [[0, k + 1, i, parent2[j] + 1, j - 1], [2, i1, k, j1, parent2[j]]]
+			S2[i1][i][j1][j] = [[S_MATRIX_IDENTIFIER, k + 1, i, parent2[j] + 1, j - 1], [S2_MATRIX_IDENTIFIER, i1, k, j1, parent2[j]]]
 
 		#print 'Q2', i1, i, j1, j, Q2[i1][i][j1][j]
 		return Q2[i1][i][j1][j]

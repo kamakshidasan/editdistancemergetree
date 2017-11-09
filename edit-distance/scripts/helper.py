@@ -7,11 +7,6 @@ BIN_EXTENSION = '.bin'
 VTP_EXTENSION = '.vtp'
 PNG_EXTENSION = '.png'
 
-PERSISTENCE_PAIRS_SUFFIX = '-persistent-pairs'
-PERSISTENCE_POINTS_SUFFIX = '-persistent-points_data'
-PERSISTENCE_CELLS_SUFFIX = '-persistent-cells_data'
-FIELD_DATA_SUFFIX = '-field_data'
-
 PAIRS_INFIX = '-pairs-'
 TREE_INFIX = '-tree-'
 NODES_INFIX = '-nodes-'
@@ -53,8 +48,25 @@ COMPUTE_SCRIPT = 'compute.py'
 SPLIT_MAKE_GRAPH_SCRIPT = 'split-make-graph-left.py'
 
 INFINITY = float('inf')
-UNKNOWN_COST = float('-inf')
 
+UNKNOWN_COST = float('-inf')
+RELABEL_IDENTIFIER = 0
+
+T1_STARTING_GAP_IDENTIFIER = 1
+T1_CONTINUING_GAP_IDENTIFIER = 2
+T1_GENERIC_GAP_IDENTIFIER = 3
+T1_RIGHT_GAP_IDENTIFIER = 4
+
+T2_STARTING_GAP_IDENTIFIER = 5
+T2_CONTINUING_GAP_IDENTIFIER = 6
+T2_GENERIC_GAP_IDENTIFIER = 7
+T2_RIGHT_GAP_IDENTIFIER = 8
+
+S_MATRIX_IDENTIFIER = 0
+S1_MATRIX_IDENTIFIER = 1
+S2_MATRIX_IDENTIFIER = 2
+
+GAP_NODE = -1
 
 # get working directory and add '/' at the end
 def cwd():

@@ -281,7 +281,7 @@ with open(arcs_file_path, 'rb') as csvfile:
 
 tree_file.close()
 
-# Write persistent pairs after thresholding to file
+# Write the persistence diagram after thresholding of only the super/sub level-set [for usage by TDA]
 pairs_file_arguments = [tree_type, PAIRS_INFIX, file_name, CSV_EXTENSION]
 pairs_file_path = get_output_path(file_path, pairs_file_arguments, folder_name = PERSISTENCE_FOLDER)
 
@@ -301,7 +301,7 @@ persistence_threshold_data = servermanager.Fetch(persistenceDiagramSimplified)
 # Get the number of persistent points and arcs
 num_persistent_threshold_points = persistenceDiagramSimplified.GetDataInformation().GetNumberOfPoints()
 
-# Write the persistence diagram of only the super/sub level-set [for usage by TDA]
+# Iterate across all points in diagram and write persistent pairs
 for index in range(num_persistent_threshold_points):
 	vertex_id = persistence_threshold_data.GetPointData().GetArray('VertexIdentifier').GetValue(index)
 	try:
@@ -320,7 +320,7 @@ for index in range(num_persistent_threshold_points):
 			birth_scalar = vertex_scalar
 			write_row = True
 	except:
-		# This row contains a value not present the merge-tree
+		# This row contains a value not present in the merge-tree
 		write_row = False
 		pass
 
