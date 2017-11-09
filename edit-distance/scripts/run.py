@@ -20,19 +20,16 @@ file_list.insert(0, 'adhitya.vtk')
 #num_files = len(file_list)
 num_files = 200
 
-for i in range(1, num_files):
+for i in range(1, num_files+1):
 
-	
-	compute_file = get_output_path(file_path, [COMPUTE_SCRIPT], folder_name = SCRIPTS_FOLDER)
-	replace_wildcard(compute_file, file_list[i-1], file_list[i])
+	#compute_file = get_output_path(file_path, [COMPUTE_SCRIPT], folder_name = SCRIPTS_FOLDER)
+	#replace_wildcard(compute_file, file_list[i-1], file_list[i])
+	#run_paraview_script(compute_file)
 
-	run_paraview_script(compute_file)
-	
+	split_make_graph_file = get_output_path(file_path, [SPLIT_MAKE_GRAPH_SCRIPT], folder_name = SCRIPTS_FOLDER)
+	run_python_script(split_make_graph_file, [file_list[i]])
 
-	#split_make_graph_file = get_output_path(file_path, [SPLIT_MAKE_GRAPH_SCRIPT], folder_name = SCRIPTS_FOLDER)
-	#run_python_script(split_make_graph_file, [file_list[i]])
-
-	files_left = num_files - (i+1)
+	files_left = num_files - i
 	print file_list[i], 'Done :)', files_left, ' files remaining'
 
 

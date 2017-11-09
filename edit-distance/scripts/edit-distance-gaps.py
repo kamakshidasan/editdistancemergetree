@@ -151,10 +151,12 @@ def Qf(i1, i, j1, j):
 			S[i1][i][j1][j] = [0, i1, i - 1, j1, j - 1, message, cost]
 		elif (case_index == 1):
 			message = str(i) + ' is a gap point in T1'
-			S[i1][i][j1][j] = [1, i1, i, j1, j, message]
+			cost = UNKNOWN_COST
+			S[i1][i][j1][j] = [1, i1, i, j1, j, message, cost]
 		else:
 			message = str(j) + ' is a gap point in T2'
-			S[i1][i][j1][j] = [2, i1, i, j1, j, message]
+			cost = UNKNOWN_COST
+			S[i1][i][j1][j] = [2, i1, i, j1, j, message, cost]
 
 		return Q[i1][i][j1][j]
 

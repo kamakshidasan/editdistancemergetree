@@ -25,6 +25,7 @@ r1 = {}
 p1 = {}
 l1 = {}
 d1 = {}
+pp1 = {}
 
 level_nodes_order = []
 level_nodes_dictionary = {}
@@ -71,7 +72,7 @@ def traverse(i, root, parentNode):
 			traverse(j, node, current)
 
 
-def preorder(tree, right_dictionary, parent_dictionary, label_dictionary, difference_dictionary):
+def preorder(tree, right_dictionary, parent_dictionary, label_dictionary, difference_dictionary, pairs_dictionary):
 	if (tree == None):
 		return
 	else:
@@ -84,10 +85,12 @@ def preorder(tree, right_dictionary, parent_dictionary, label_dictionary, differ
 
 		difference_dictionary[index_map[tree.value]] = abs(scalars[tree.value] - scalars[pairs[tree.value]])
 
+		pairs_dictionary[index_map[tree.value]] = index_map[pairs[tree.value]]
+
 		# print tree.value, index_map[tree.value], scalars[tree.value], parent_dictionary[index_map[tree.value]]
 
-		preorder(tree.left, right_dictionary, parent_dictionary, label_dictionary, difference_dictionary)
-		preorder(tree.right, right_dictionary, parent_dictionary, label_dictionary, difference_dictionary)
+		preorder(tree.left, right_dictionary, parent_dictionary, label_dictionary, difference_dictionary, pairs_dictionary)
+		preorder(tree.right, right_dictionary, parent_dictionary, label_dictionary, difference_dictionary, pairs_dictionary)
 
 
 def right_leaf(tree):
@@ -192,7 +195,7 @@ tree.value = root
 tree.parent = tree
 traverse(0, root, tree)
 
-preorder(tree, r1, p1, l1, d1)
+preorder(tree, r1, p1, l1, d1, pp1)
 
 printLevelOrder(tree)
 
@@ -250,6 +253,7 @@ r1 = {}
 p1 = {}
 l1 = {}
 d1 = {}
+pp1 = {}
 
 # Print the graph
 graph_file = open(graph_path, 'w')
@@ -269,22 +273,28 @@ for node in restructured_nodes_dictionary.keys():
 graph_file.write('}')
 graph_file.close()
 
-preorder(restructured_tree, r1, p1, l1, d1)
+preorder(restructured_tree, r1, p1, l1, d1, pp1)
 
 inv_map = {v: k for k, v in index_map.iteritems()}
 
 os.system('dot -Tpng ' + graph_path + ' > ' + image_path)
 
-with open(dictionary_path + output_file + '-right.txt', 'wb') as handle:
+with open(dictionary_path + output_file + '-right.bin', 'wb') as handle:
 	pickle.dump(r1, handle)
 
-with open(dictionary_path + output_file + '-parent.txt', 'wb') as handle:
+with open(dictionary_path + output_file + '-parent.bin', 'wb') as handle:
 	pickle.dump(p1, handle)
 
-with open(dictionary_path + output_file + '-labels.txt', 'wb') as handle:
+with open(dictionary_path + output_file + '-labels.bin', 'wb') as handle:
 	pickle.dump(l1, handle)
 
-with open(dictionary_path + output_file + '-difference.txt', 'wb') as handle:
+with open(dictionary_path + output_file + '-difference.bin', 'wb') as handle:
 	pickle.dump(d1, handle)
+
+with open(dictionary_path + output_file + '-pairs.bin', 'wb') as handle:
+	pickle.dump(pp1, handle)
+
+with open(dictionary_path + output_file + '-mapping.bin', 'wb') as handle:
+	pickle.dump(inv_map, handle)
 
 print filename, 'Done :)'

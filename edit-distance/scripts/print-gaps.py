@@ -11,7 +11,7 @@ except:
 def printIndices(dictionary, k):
 	try:
 		try:
-			print k
+			print round(k[6],3), k[5]
 		except IndexError:
 			# This should only happen only during the first call of this function
 			pass
@@ -62,6 +62,12 @@ try:
 	difference1 = get_dictionary(file_path, [filename1, DIFFERENCE_NODE_PREFIX])
 	difference2 = get_dictionary(file_path, [filename2, DIFFERENCE_NODE_PREFIX])
 
+	pairs1 = get_dictionary(file_path, [filename1, PAIRS_NODE_PREFIX])
+	pairs2 = get_dictionary(file_path, [filename2, PAIRS_NODE_PREFIX])
+
+	mapping1 = get_dictionary(file_path, [filename1, MAPPING_NODE_PREFIX])
+	mapping2 = get_dictionary(file_path, [filename2, MAPPING_NODE_PREFIX])
+
 	# Get size of both the trees
 	size1 = len(parent1.keys())
 	size2 = len(parent2.keys())
@@ -79,8 +85,10 @@ try:
 	S2 = get_matrix(file_path, [filename1, filename2, S2_IDENTIFIER])
 
 except:
-	print "Something bad happened", filename1, filename2
+	print "Something bad happened :(", filename1, filename2
 	
 print filename1, filename2
+
 # Start tracing back from the back
 traverse(S, extents)
+

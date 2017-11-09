@@ -1,5 +1,7 @@
 import os
 import sys
+from helper import *
+
 try:
 	cores = int(sys.argv[1])
 	start = int(sys.argv[2])
@@ -10,9 +12,11 @@ except:
 count = start
 highest = 200
 
-# Try deleting the results file
+# reusing a syringe and a results file has the same impact
+# throw away the earlier used results file
 try:
-	results_path = os.path.join(os.getcwd(), 'results.csv')
+	file_path = os.path.abspath(inspect.getfile(inspect.currentframe()))
+	results_path = get_output_path(file_path, [EDIT_DISTANCE_RESULT, CSV_EXTENSION], folder_name = RESULTS_FOLDER)
 	os.remove(results_path)
 except OSError:
 	pass
@@ -24,10 +28,11 @@ def print_statement():
 		if count <= highest:
 			statement += 'python edit-distance-gaps.py tv_'+str(count) + ' tv_'+str(count-1) + '\n'
 			#statement += 'python edit-distance.py tv_'+str(count) + ' tv_1'+ '\n'
+			statement += 'python print-gaps.py tv_'+str(count) + ' tv_'+str(count-1) + '\n'
 			count+=1
 
 	# Delete script after execution [Please be nice :)]
-	#statement += 'rm -- \"$0\"'
+	statement += 'rm -- \"$0\"'
 	return statement
 
 for i in range(0, cores):

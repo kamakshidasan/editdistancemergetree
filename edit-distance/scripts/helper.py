@@ -23,6 +23,8 @@ RIGHT_NODE_PREFIX = '-right'
 PARENT_NODE_PREFIX = '-parent'
 LABEL_NODE_PREFIX = '-labels'
 DIFFERENCE_NODE_PREFIX = '-difference'
+PAIRS_NODE_PREFIX = '-pairs'
+MAPPING_NODE_PREFIX = '-mapping'
 
 Q_IDENTIFIER = '-Q'
 Q1_IDENTIFIER = '-Q1'
@@ -51,6 +53,8 @@ COMPUTE_SCRIPT = 'compute.py'
 SPLIT_MAKE_GRAPH_SCRIPT = 'split-make-graph-left.py'
 
 INFINITY = float('inf')
+UNKNOWN_COST = float('-inf')
+
 
 # get working directory and add '/' at the end
 def cwd():
@@ -165,9 +169,10 @@ def run_jar(jar_file, arguments):
 	os.system(command)
 
 def get_dictionary(file_path, arguments):
-	# extension is always TXT
-	arguments.append(TXT_EXTENSION)
+	# extension is always BIN
+	arguments.append(BIN_EXTENSION)
 	dictionary_path = get_output_path(file_path, arguments, folder_name = DICTIONARY_FOLDER)
+
 	with open(dictionary_path, 'rb') as handle:
 		current_dictionary = pickle.loads(handle.read())
 	
