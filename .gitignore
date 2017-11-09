@@ -10,7 +10,9 @@ trees/
 output/
 results/
 matrices/
+comparison/
 *.pyc
 *.Rhistory
 results.csv
+print-all-gaps.sh
 .DS_Store

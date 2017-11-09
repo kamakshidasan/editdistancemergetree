@@ -27,7 +27,7 @@ def print_statement():
 			count+=1
 
 	# Delete script after execution [Please be nice :)]
-	statement += 'rm -- \"$0\"'
+	#statement += 'rm -- \"$0\"'
 	return statement
 
 for i in range(0, cores):
