@@ -1,6 +1,7 @@
 import os, time
 import itertools, sys, pickle, inspect
 from helper import *
+from scipy import spatial
 
 # Remove the try-catch once testing is complete
 try:
@@ -93,7 +94,7 @@ def print_tree():
 	compare_file.close()
 
 	# get comparison image
-	run_shell_script(MAKE_IMAGE_SCRIPT, [compare_path])
+	#run_shell_script(MAKE_IMAGE_SCRIPT, [compare_path])
 
 def printIndices(dictionary, k):
 	try:
@@ -144,6 +145,14 @@ def printIndices(dictionary, k):
 	except:
 		#print 'Done! :)'
 		return None
+
+def find_coords(vertex_index):
+	x_dim = y_dim = z_dim = 300
+	z = vertex_index/(x_dim*y_dim)
+	xy = vertex_index - z * x_dim * y_dim
+	y = xy/x_dim
+	x = xy - y * x_dim
+	return (x, y, z)
 	
 	
 # Get the paths
@@ -200,6 +209,14 @@ try:
 	cost1 = {}
 	cost2 = {}
 
+	# mapping from vertex indice to preorder/map index
+	inverse1 = {v: k for k, v in index_mapping1.iteritems()}
+	inverse2 = {v: k for k, v in index_mapping2.iteritems()}
+
+	# store list of vertex indices in each tree
+	vertex_indices1 = inverse1.keys()
+	vertex_indices2 = inverse2.keys()
+
 except:
 	print "Something bad happened :(", filename1, filename2
 
@@ -214,5 +231,50 @@ try:
 except:
 	print 'Govinda'
 
-print "*******"
+# get coordinates for each node using vertex index
+coords1 = [find_coords(vertex_index) for vertex_index in [index_mapping1[i] for i in map1.keys()]]
+coords2 = [find_coords(vertex_index) for vertex_index in [index_mapping2[j] for j in map2.keys()]]
 
+# data structure to hold the coordinates
+spatial_tree1 = spatial.KDTree(coords1)
+spatial_tree2 = spatial.KDTree(coords2)
+
+# iterate through mappings of first tree
+for i in map1.keys():
+	# get the coordinate which closest to this node in the second tree
+	distance, ideal_index = spatial_tree2.query([coords1[i-1]])
+	ideal_index = ideal_index[0]+1
+	# get vertex index of ideal mapping
+	ideal_mapping = index_mapping2[ideal_index]
+	# get preorder index of mapping in second tree
+	j = map1[i]
+	# get vertex index of node
+	index1 = index_mapping1[i]
+	# if node is not a gap
+	if j != GAP_NODE:
+		actual_mapping = index_mapping2[j]
+		if ideal_mapping == actual_mapping:
+			#continue
+			print i, index1, j, actual_mapping, 'cool :)'
+		else:
+			print i, index1, ideal_index, ideal_mapping, j, actual_mapping, 'relabel?'
+	else:
+		print i, index1, ideal_index, ideal_mapping, 'gap?'
+
+# same as above but only iterate for gaps in second tree
+for j in map2.keys():
+	i = map2[j]
+	if i == GAP_NODE:
+		# do fancy checking only if node is a gap
+
+		# get the coordinate which closest to this node in the first tree
+		distance, ideal_index = spatial_tree1.query([coords2[j-1]])
+		ideal_index = ideal_index[0]+1
+
+		# get vertex index of ideal mapping and current node
+		ideal_mapping = index_mapping1[ideal_index]
+		index2 = index_mapping2[j]		
+
+		print j, index2, ideal_index, ideal_mapping, 'gap?'
+
+print "*******"
