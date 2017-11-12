@@ -23,6 +23,8 @@ DIFFERENCE_NODE_PREFIX = '-difference'
 PAIRS_NODE_PREFIX = '-pairs'
 MAPPING_NODE_PREFIX = '-mapping'
 
+TREE_TYPE_SPLIT = 'split'
+
 Q_IDENTIFIER = '-Q'
 Q1_IDENTIFIER = '-Q1'
 Q2_IDENTIFIER = '-Q2'
@@ -42,6 +44,8 @@ PERSISTENCE_FOLDER = 'persistence'
 DICTIONARY_FOLDER = 'dictionary'
 RESULTS_FOLDER = 'results'
 MATRICES_FOLDER = 'matrices'
+IMAGES_FOLDER = 'images'
+GRAPHS_FOLDER = 'graph'
 COMPARE_GRAPHS_FOLDER = 'compare-graphs'
 COMPARE_IMAGES_FOLDER = 'compare-images'
 
@@ -49,7 +53,8 @@ PYTHON_COMMAND = 'python'
 PARAVIEW_COMMAND = 'paraview'
 
 COMPUTE_SCRIPT = 'compute.py'
-SPLIT_MAKE_GRAPH_SCRIPT = 'split-make-graph-left.py'
+SPLIT_MAKE_GRAPH_SCRIPT = 'split-make-graph.py'
+SPLIT_MAKE_GRAPH_LEFT_SCRIPT = 'split-make-graph-left.py'
 MAKE_IMAGE_SCRIPT = 'make-image.sh'
 
 INFINITY = float('inf')
@@ -253,12 +258,15 @@ def pretty_print_time(seconds):
 	return time_taken
 
 # save dictionary to file
-def save_dictionary(dictionary, file_path):
-	with open(file_path, 'wb') as handle:
+def save_dictionary(dictionary, file_name, identifier):
+	dictionary_file_arguments = [file_name, identifier, BIN_EXTENSION]
+	dictionary_file_path = get_output_path(current_path(), dictionary_file_arguments, folder_name = DICTIONARY_FOLDER)
+	with open(dictionary_file_path, 'wb') as handle:
 		pickle.dump(dictionary, handle)
 
 # used in edit-distance to save intermediate matrices
 def save_matrix(dictionary, filenames, identifier):
 	matrix_file_arguments = [join_strings(filenames), identifier, BIN_EXTENSION]
 	matrix_file_path = get_output_path(current_path(), matrix_file_arguments, folder_name = MATRICES_FOLDER)
-	save_dictionary(dictionary, matrix_file_path)
+	with open(matrix_file_path, 'wb') as handle:
+		pickle.dump(dictionary, handle)

@@ -1,17 +1,10 @@
 import csv, sys
 import pickle
-import os
+from helper import *
 
-filename = (sys.argv[1]).split('.')[0]
-parent_path = '/home/nagarjun/Desktop/bitbucket/editdistancemergetree/edit-distance/'
-tree_path = parent_path + 'trees/'
-dictionary_path = parent_path + 'dictionary/'
-image_path = parent_path + 'images/'
-graph_path = parent_path + 'graph/'
-pairs_path = parent_path + 'pairs/'
-contour_file = tree_path + 'split-tree-' + filename + '.csv'
-pairs_file = pairs_path + 'split-pairs-' + filename + '.csv'
-output_file = filename
+file_name = (sys.argv[1]).split('.')[0]
+file_path = os.path.abspath(inspect.getfile(inspect.currentframe()))
+tree_type = TREE_TYPE_SPLIT
 
 scalars = {}
 visited = {}
@@ -21,21 +14,17 @@ pairs = {}
 
 index = 1
 
-r1 = {}
-p1 = {}
-l1 = {}
-d1 = {}
-pp1 = {}
+right_dictionary = {}
+parent_dictionary = {}
+label_dictionary = {}
+difference_dictionary = {}
+pairs_dictionary = {}
 
 level_nodes_order = []
 level_nodes_dictionary = {}
 restructured_nodes_dictionary = {}
 
-graph_path = graph_path + output_file + '.txt'
-image_path = image_path + output_file + '.png'
-
 root = None
-
 
 class Tree(object):
 	def __init__(self):
@@ -105,15 +94,15 @@ def right_leaf(tree):
 		return right_leaf(tree.right)
 
 
-# Function to  print level order traversal of tree
-def printLevelOrder(root):
+# Function to traverse level order traversal of tree
+def traverseLevelOrder(root):
 	h = height(root)
 	for i in range(1, h + 1):
-		printGivenLevel(root, i)
+		traverseGivenLevel(root, i)
 	# print ''
 
 
-def printGivenLevel(root, level):
+def traverseGivenLevel(root, level):
 	if root is None:
 		return
 	if level == 1:
@@ -125,8 +114,8 @@ def printGivenLevel(root, level):
 		newNode.value = root.value
 		restructured_nodes_dictionary[root.value] = newNode
 	elif level > 1:
-		printGivenLevel(root.left, level - 1)
-		printGivenLevel(root.right, level - 1)
+		traverseGivenLevel(root.left, level - 1)
+		traverseGivenLevel(root.right, level - 1)
 
 
 def height(node):
@@ -149,8 +138,13 @@ def restructured_preorder(root):
 		index += 1
 		restructured_preorder(root.left)
 		restructured_preorder(root.right)
+		
+# Get merge tree path
+tree_file_arguments = [tree_type, TREE_INFIX, file_name, CSV_EXTENSION]
+tree_file_path = get_output_path(file_path, tree_file_arguments, folder_name = TREES_FOLDER)
 
-with open(contour_file, 'rb') as csvfile:
+# Read merge tree file
+with open(tree_file_path, 'rb') as csvfile:
 	csvfile.readline()
 	spamreader = csv.reader(csvfile, delimiter=' ')
 	for r in spamreader:
@@ -178,7 +172,11 @@ for i in adjacency.keys():
 		if (scalars[i] < scalars[adjacency[i][0]]):
 			root = i
 
-with open(pairs_file, 'rb') as persistence_pairs:
+# Get persistence pairs
+pairs_file_arguments = [tree_type, PAIRS_INFIX, file_name, CSV_EXTENSION]
+pairs_file_path = get_output_path(file_path, pairs_file_arguments, folder_name = PAIRS_FOLDER)
+
+with open(pairs_file_path, 'rb') as persistence_pairs:
 	persistence_pairs.readline()
 	spamreader = csv.reader(persistence_pairs, delimiter=' ')
 	for r in spamreader:
@@ -195,9 +193,8 @@ tree.value = root
 tree.parent = tree
 traverse(0, root, tree)
 
-preorder(tree, r1, p1, l1, d1, pp1)
-
-printLevelOrder(tree)
+preorder(tree, right_dictionary, parent_dictionary, label_dictionary, difference_dictionary, pairs_dictionary)
+traverseLevelOrder(tree)
 
 # Make parent of each node syncronized
 for node in level_nodes_order:
@@ -211,7 +208,6 @@ level_nodes_order.remove(global_minimum_pair)
 
 #print global_minimum.value, global_minimum_pair.value
 restructured_minimum = level_nodes_order[0].value
-
 
 for node in level_nodes_order:
 	left_node = None
@@ -249,14 +245,15 @@ for node in level_nodes_order:
 # Restore variables again for preorder and restructured_preorder
 index = 1
 index_map = {}
-r1 = {}
-p1 = {}
-l1 = {}
-d1 = {}
-pp1 = {}
+right_dictionary = {}
+parent_dictionary = {}
+label_dictionary = {}
+difference_dictionary = {}
+pairs_dictionary = {}
 
 # Print the graph
-graph_file = open(graph_path, 'w')
+graph_file_path = get_output_path(file_path, [file_name, TXT_EXTENSION], folder_name = GRAPHS_FOLDER)
+graph_file = open(graph_file_path, 'w')
 graph_file.write('digraph {\n')
 
 restructured_nodes_dictionary[global_minimum.value].left = restructured_nodes_dictionary[restructured_minimum]
@@ -273,28 +270,20 @@ for node in restructured_nodes_dictionary.keys():
 graph_file.write('}')
 graph_file.close()
 
-preorder(restructured_tree, r1, p1, l1, d1, pp1)
+preorder(restructured_tree, right_dictionary, parent_dictionary, label_dictionary, difference_dictionary, pairs_dictionary)
 
 inv_map = {v: k for k, v in index_map.iteritems()}
 
-os.system('dot -Tpng ' + graph_path + ' > ' + image_path)
+# write graph as image
+image_file_path = get_output_path(file_path, [file_name, PNG_EXTENSION], folder_name = IMAGES_FOLDER)
+os.system('dot -Tpng ' + graph_file_path + ' > ' + image_file_path)
 
-with open(dictionary_path + output_file + '-right.bin', 'wb') as handle:
-	pickle.dump(r1, handle)
+# save dictionaries to respective files
+save_dictionary(right_dictionary, file_name, RIGHT_NODE_PREFIX)
+save_dictionary(parent_dictionary, file_name, PARENT_NODE_PREFIX)
+save_dictionary(label_dictionary, file_name, LABEL_NODE_PREFIX)
+save_dictionary(difference_dictionary, file_name, DIFFERENCE_NODE_PREFIX)
+save_dictionary(pairs_dictionary, file_name, PAIRS_NODE_PREFIX)
+save_dictionary(inv_map, file_name, MAPPING_NODE_PREFIX)
 
-with open(dictionary_path + output_file + '-parent.bin', 'wb') as handle:
-	pickle.dump(p1, handle)
-
-with open(dictionary_path + output_file + '-labels.bin', 'wb') as handle:
-	pickle.dump(l1, handle)
-
-with open(dictionary_path + output_file + '-difference.bin', 'wb') as handle:
-	pickle.dump(d1, handle)
-
-with open(dictionary_path + output_file + '-pairs.bin', 'wb') as handle:
-	pickle.dump(pp1, handle)
-
-with open(dictionary_path + output_file + '-mapping.bin', 'wb') as handle:
-	pickle.dump(inv_map, handle)
-
-print filename, 'Done :)'
+print file_name, 'Done :)'

@@ -1,48 +1,43 @@
 import csv, sys
-import pickle
-import os
+from helper import *
 
-filename = (sys.argv[1]).split('.')[0]
-parent_path = '/home/nagarjun/Desktop/bitbucket/editdistancemergetree/edit-distance/'
-tree_path = parent_path + 'trees/'
-dictionary_path = parent_path + 'dictionary/'
-image_path = parent_path + 'images/'
-graph_path = parent_path + 'graph/'
-pairs_path = parent_path + 'pairs/'
-contour_file = tree_path + 'split-tree-' + filename + '.csv'
-pairs_file = pairs_path + 'split-pairs-' + filename + '.csv'
-output_file = filename
+file_name = (sys.argv[1]).split('.')[0]
+file_path = os.path.abspath(inspect.getfile(inspect.currentframe()))
+tree_type = TREE_TYPE_SPLIT
 
 scalars = {}
 visited= {}
 adjacency = {}
 index_map = {}
 pairs = {}
+inverse_index_map = {}
 
 index = 1
 
-r1 = {}
-p1 = {}
-l1 = {}
-d1 = {}
-pp1 = {}
+right_dictionary = {}
+parent_dictionary = {}
+label_dictionary = {}
+difference_dictionary = {}
+pairs_dictionary = {}
 
 root = None
 
 class Tree(object):
-    def __init__(self):
+	def __init__(self):
 		self.parent = None
 		self.left = None
 		self.right = None
 		self.value = None
 
 def compare_nodes(a, b):
-    if scalars[a] > scalars[b]:
-        return 1
-    else:
+	#if scalars[a] > scalars[b]:
+	# Adhitya: Testing spatial ordering
+	if a > b:
+		return 1
+	else:
 		return -1
 
-def traverse(i, root, parentNode):
+def traverse(i, root, parent_node):
 	#print root, scalars[root], i
 	global index
 	index_map[root] = index
@@ -53,11 +48,11 @@ def traverse(i, root, parentNode):
 	for j, node in enumerate(adjacency[root]):
 		if(visited[node] == False):
 			current = Tree()
-			if(parentNode.left == None):
-				parentNode.left = current
+			if(parent_node.left == None):
+				parent_node.left = current
 			else:
-				parentNode.right = current
-			current.parent = parentNode
+				parent_node.right = current
+			current.parent = parent_node
 			current.value = node
 			traverse(j, node, current)
 
@@ -91,103 +86,109 @@ def right_leaf(tree):
 			return tree.value
 	else:
 		return right_leaf(tree.right)
-
-with open(contour_file, 'rb') as csvfile:
-	csvfile.readline() 
-	spamreader = csv.reader(csvfile, delimiter=' ')
-	for r in spamreader:
-		row = r[0].split(',')
-		node1 = int(row[0])
-		node2 = int(row[1])
 		
-		scalars[node1] = float(row[2])
-		scalars[node2] = float(row[3])
 		
-		visited[node1] = False
-		visited[node2] = False
+def get_merge_tree():
+	# Get merge tree path
+	tree_file_arguments = [tree_type, TREE_INFIX, file_name, CSV_EXTENSION]
+	tree_file_path = get_output_path(file_path, tree_file_arguments, folder_name = TREES_FOLDER)
 
-		if node1 not in adjacency.keys():
-			adjacency[node1] = []
+	# Read merge tree file
+	with open(tree_file_path, 'rb') as csvfile:
+		csvfile.readline() 
+		spamreader = csv.reader(csvfile, delimiter=' ')
+		for r in spamreader:
+			row = r[0].split(',')
+			node1 = int(row[0])
+			node2 = int(row[1])
+		
+			scalars[node1] = float(row[2])
+			scalars[node2] = float(row[3])
+		
+			visited[node1] = False
+			visited[node2] = False
 
-		if node2 not in adjacency.keys():
-			adjacency[node2] = []
+			if node1 not in adjacency.keys():
+				adjacency[node1] = []
 
-		adjacency[node1].append(node2)
-		adjacency[node2].append(node1)
+			if node2 not in adjacency.keys():
+				adjacency[node2] = []
 
-#maximum_scalar = float("-inf")
+			adjacency[node1].append(node2)
+			adjacency[node2].append(node1)
 
-#for i in scalars:
-#	maximum_scalar = max(maximum_scalar, scalars[i])
+	for i in adjacency.keys():
+		if len(adjacency[i]) == 1:
+			if (scalars[i] < scalars[adjacency[i][0]]):
+				root = i
+	return root
 
-#print filename+','+str(maximum_scalar)
+def get_persistent_pairs():
+	# Get persistence pairs
+	pairs_file_arguments = [tree_type, PAIRS_INFIX, file_name, CSV_EXTENSION]
+	pairs_file_path = get_output_path(file_path, pairs_file_arguments, folder_name = PAIRS_FOLDER)
 
-#for i in scalars:
-#	scalars[i] = maximum_scalar - scalars[i]
+	with open(pairs_file_path, 'rb') as persistence_pairs:
+		persistence_pairs.readline() 
+		spamreader = csv.reader(persistence_pairs, delimiter=' ')
+		for r in spamreader:
+			row = r[0].split(',')
+			node1 = int(row[0])
+			node2 = int(row[1])
 
-for i in adjacency.keys():
-	if len(adjacency[i]) == 1:
-		if (scalars[i] < scalars[adjacency[i][0]]):
-			root = i
+			if (node1 in scalars.keys()) and (node2 in scalars.keys()):
+				pairs[node1] = node2
+				pairs[node2] = node1
+	
+def write_graph():
+	# Print the graph
+	graph_file_path = get_output_path(file_path, [file_name, TXT_EXTENSION], folder_name = GRAPHS_FOLDER)
+	graph_file = open(graph_file_path, 'w')
+	graph_file.write('digraph {\n')
 
-with open(pairs_file, 'rb') as persistence_pairs:
-	persistence_pairs.readline() 
-	spamreader = csv.reader(persistence_pairs, delimiter=' ')
-	for r in spamreader:
-		row = r[0].split(',')
-		node1 = int(row[0])
-		node2 = int(row[1])
+	#print sorted(inverse_index_map.keys(), reverse = True)
 
-		if (node1 in scalars.keys()) and (node2 in scalars.keys()):
-			pairs[node1] = node2
-			pairs[node2] = node1
+	for i in inverse_index_map.keys():
+		#print inverse_index_map[i], i, r1[i], p1[i], l1[i], d1[i]
+
+		if parent_dictionary[i] != 0:
+			node1 = "\"" + str(inverse_index_map[i]) + " " +str(round(scalars[inverse_index_map[i]],4)) + ' ('+str(i)+')' +"\""
+			connector = ' -> '
+			node2 = "\""+ str(inverse_index_map[parent_dictionary[i]]) + " " + str(round(scalars[inverse_index_map[parent_dictionary[i]]],4)) + ' ('+str(parent_dictionary[i])+')' +"\""
+			end = ';'
+			line = node2 + connector + node1 + end +'\n'
+			graph_file.write(line)
+
+	graph_file.write('}')
+	graph_file.close()
+	
+	# write graph as image
+	image_file_path = get_output_path(file_path, [file_name, PNG_EXTENSION], folder_name = IMAGES_FOLDER)
+	os.system('dot -Tpng ' + graph_file_path + ' > ' + image_file_path)
+	
+def save_dictionaries():
+	# save dictionaries to respective files
+	save_dictionary(right_dictionary, file_name, RIGHT_NODE_PREFIX)
+	save_dictionary(parent_dictionary, file_name, PARENT_NODE_PREFIX)
+	save_dictionary(label_dictionary, file_name, LABEL_NODE_PREFIX)
+	save_dictionary(difference_dictionary, file_name, DIFFERENCE_NODE_PREFIX)
+	save_dictionary(pairs_dictionary, file_name, PAIRS_NODE_PREFIX)
+	save_dictionary(inverse_index_map, file_name, MAPPING_NODE_PREFIX)
+	
+root = get_merge_tree()
+get_persistent_pairs()
 
 tree = Tree()
 tree.value = root
 tree.parent = tree
 traverse(0, root, tree)
 
-preorder(tree, r1, p1, l1, d1, pp1)
+preorder(tree, right_dictionary, parent_dictionary, label_dictionary, difference_dictionary, pairs_dictionary)
 
-inv_map = {v: k for k, v in index_map.iteritems()}
+# store inverse of index map
+inverse_index_map = {v: k for k, v in index_map.iteritems()}
+write_graph()
 
-graph_path = graph_path + output_file + '.txt'
-image_path = image_path + output_file + '.png'
-graph_file = open(graph_path, 'w')
-graph_file.write('digraph {\n')
+save_dictionaries()
 
-#print sorted(inv_map.keys(), reverse = True)
-
-for i in inv_map.keys():
-	#print inv_map[i], i, r1[i], p1[i], l1[i], d1[i]
-
-	if p1[i] != 0:
-		node1 = "\"" + str(inv_map[i]) + " " +str(round(scalars[inv_map[i]],4)) + ' ('+str(i)+')' +"\""
-		connector = ' -> '
-		node2 = "\""+ str(inv_map[p1[i]]) + " " + str(round(scalars[inv_map[p1[i]]],4)) + ' ('+str(p1[i])+')' +"\""
-		end = ';'
-		line = node2 + connector + node1 + end +'\n'
-		graph_file.write(line)
-
-graph_file.write('}')
-graph_file.close()
-
-os.system('dot -Tpng '+ graph_path+' > '+image_path)
-
-with open(dictionary_path + output_file +'-right.bin', 'wb') as handle:
-  pickle.dump(r1, handle)
-
-with open(dictionary_path + output_file +'-parent.bin', 'wb') as handle:
-  pickle.dump(p1, handle)
-
-with open(dictionary_path + output_file +'-labels.bin', 'wb') as handle:
-  pickle.dump(l1, handle)
-
-with open(dictionary_path + output_file +'-difference.bin', 'wb') as handle:
-  pickle.dump(d1, handle)
-
-with open(dictionary_path + output_file + '-pairs.bin', 'wb') as handle:
-	pickle.dump(pp1, handle)
-
-with open(dictionary_path + output_file + '-mapping.bin', 'wb') as handle:
-	pickle.dump(inv_map, handle)
+print file_name, 'Done :)'

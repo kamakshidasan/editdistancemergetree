@@ -1,7 +1,6 @@
-- Remove hardcoded paths and replace them with relative ones in get-persistence-fast.py [Find nagarjun! :P]
-- Convert Gaussian vtk files to vti within Java code itself [change writing format]
+- Make restructuring part of split-make-graph-left.py prettier
 - Make a file with a description of each script/folder
-- Merge all helper files
-- In helper - If folder not present create it instead of throwing an error [create_output_folder already exists - Rename?]
-- Add Persistence Pair in dot file
+- Convert Gaussian vtk files to vti within Java code itself [change writing format]
+- In helper - If folder not present, create it; instead of throwing an error [create_output_folder already exists - Rename?]
+- Find prefix labels and change them to suffix [globally?]
 

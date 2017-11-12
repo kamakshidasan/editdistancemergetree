@@ -26,6 +26,13 @@ def traverse(dictionary, indices):
 	else:
 		print 'Error!'
 
+def get_style(index):
+	if index == GAP_NODE:
+		style_attribute = "shape=diamond style=filled fillcolor=lightslategray"
+	else:
+		 style_attribute = "shape=circle style=filled fillcolor=" + colors[index]
+	return style_attribute
+
 def get_label(index, pairs, mappings, labels, costs):
 	scalar = round(labels[index], 3)
 	label = str(index) + " [" + str(pairs[index]) + "]" + "\\n"
@@ -33,13 +40,6 @@ def get_label(index, pairs, mappings, labels, costs):
 	label += str(scalar)
 	label_attribute = "label=""\"" + label +"\""
 	return label_attribute
-
-def get_style(index):
-	if index == GAP_NODE:
-		style_attribute = "shape=diamond style=filled fillcolor=lightslategray"
-	else:
-		 style_attribute = "shape=circle style=filled fillcolor=" + colors[index]
-	return style_attribute
 
 def get_node(index, pairs, mappings, labels, costs, color_index):
 	label_attribute = get_label(index, pairs, mappings, labels, costs)
@@ -94,7 +94,7 @@ def print_tree():
 	compare_file.close()
 
 	# get comparison image
-	#run_shell_script(MAKE_IMAGE_SCRIPT, [compare_path])
+	run_shell_script(MAKE_IMAGE_SCRIPT, [compare_path])
 
 def printIndices(dictionary, k):
 	try:
@@ -107,6 +107,7 @@ def printIndices(dictionary, k):
 			cost = round(k[7],3)
 
 			#print i, j, operation, message, cost
+			print message
 
 			# according to each operation store associated mapping and cost
 			if operation in [RELABEL_IDENTIFIER]:
@@ -225,11 +226,8 @@ print "*******"
 print filename1, filename2
 
 # Start tracing back from the back
-try:
-	traverse(S, extents)
-	print_tree()
-except:
-	print 'Govinda'
+traverse(S, extents)
+print_tree()
 
 # get coordinates for each node using vertex index
 coords1 = [find_coords(vertex_index) for vertex_index in [index_mapping1[i] for i in map1.keys()]]
@@ -257,7 +255,7 @@ for i in map1.keys():
 			#continue
 			print i, index1, j, actual_mapping, 'cool :)'
 		else:
-			print i, index1, ideal_index, ideal_mapping, j, actual_mapping, 'relabel?'
+			print i, index1, j, actual_mapping, ideal_index, ideal_mapping,'relabel?'
 	else:
 		print i, index1, ideal_index, ideal_mapping, 'gap?'
 
