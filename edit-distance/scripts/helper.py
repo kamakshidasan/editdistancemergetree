@@ -1,4 +1,4 @@
-import os, re, shutil, pickle, inspect
+import os, re, shutil, pickle, inspect, csv
 
 # List of constants
 CSV_EXTENSION = '.csv'
@@ -48,6 +48,7 @@ IMAGES_FOLDER = 'images'
 GRAPHS_FOLDER = 'graph'
 COMPARE_GRAPHS_FOLDER = 'compare-graphs'
 COMPARE_IMAGES_FOLDER = 'compare-images'
+DEBUG_FOLDER = 'debug'
 
 PYTHON_COMMAND = 'python'
 PARAVIEW_COMMAND = 'paraview'

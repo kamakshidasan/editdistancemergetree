@@ -276,3 +276,19 @@ for j in map2.keys():
 		print j, index2, ideal_index, ideal_mapping, 'gap?'
 
 print "*******"
+
+# Write the Merge Tree to file
+debug_file_arguments = [join_strings([filename1,filename2]), CSV_EXTENSION]
+debug_file_path = get_output_path(file_path, debug_file_arguments, folder_name = DEBUG_FOLDER)
+
+debug_file = open(debug_file_path, 'w')
+fieldnames = ['tree', 'vertex', 'index', 'parent', 'scalar', 'pair', 'persistence', 'match']
+writer = csv.writer(debug_file, delimiter=',')
+writer.writerow(fieldnames)
+
+for i in map1.keys():
+	content = ['T1', i, index_mapping1[i], parent1[i], round(label1[i],3), pairs1[i], round(difference1[i],3), map1[i]]
+	writer.writerow(content)
+for j in map2.keys():
+	content = ['T2', j, index_mapping2[j], parent2[j], round(label2[j],3), pairs2[j], round(difference2[j],3), map2[j]]
+	writer.writerow(content)

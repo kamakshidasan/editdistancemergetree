@@ -26,7 +26,7 @@ for i in range(1, num_files+1):
 	#replace_wildcard(compute_file, file_list[i-1], file_list[i])
 	#run_paraview_script(compute_file)
 
-	split_make_graph_file = get_output_path(file_path, [SPLIT_MAKE_GRAPH_SCRIPT], folder_name = SCRIPTS_FOLDER)
+	split_make_graph_file = get_output_path(file_path, [SPLIT_MAKE_GRAPH_LEFT_SCRIPT], folder_name = SCRIPTS_FOLDER)
 	run_python_script(split_make_graph_file, [file_list[i]])
 
 	files_left = num_files - i

@@ -35,6 +35,7 @@ class Tree(object):
 
 
 def compare_nodes(a, b):
+	#if a > b:
 	if scalars[a] > scalars[b]:
 		return 1
 	else:

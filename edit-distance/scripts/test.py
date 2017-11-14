@@ -1,6 +1,7 @@
 import os
 import sys
 from helper import *
+from random import randint
 
 try:
 	cores = int(sys.argv[1])
@@ -32,11 +33,23 @@ def print_statement():
 			count+=1
 
 	# Delete script after execution [Please be nice :)]
+	#statement += 'rm -- \"$0\"'
+	return statement
+
+# Basically print Trump's speeches
+def print_random_statements():
+	statement = ""
+	for i in range(0,9):
+		[first, second] = (randint(1,199),randint(1,199))
+		statement += 'python edit-distance-gaps.py tv_'+str(first) + ' tv_'+str(second) + '\n'
+		statement += 'python print-gaps.py tv_'+str(first) + ' tv_'+str(second) + '\n'
+	# Delete script after execution [Please be nice :)]
 	statement += 'rm -- \"$0\"'
 	return statement
 
 for i in range(0, cores):
-	statement = print_statement()
+	#statement = print_statement()
+	statement = print_random_statements()
 	f = open('script'+str(i)+'.sh', 'w')
 	f.write(statement)
 	f.close()
