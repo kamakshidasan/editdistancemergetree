@@ -36,7 +36,7 @@ def get_style(index):
 def get_label(index, pairs, mappings, labels, costs):
 	scalar = round(labels[index], 3)
 	label = str(index) + " [" + str(pairs[index]) + "]" + "\\n"
-	label += str(mappings[index]) + " " + str() + "\\n"
+	label += str(mappings[index]) + "\\n"
 	label += str(scalar)
 	label_attribute = "label=""\"" + label +"\""
 	return label_attribute

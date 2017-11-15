@@ -30,9 +30,9 @@ class Tree(object):
 		self.value = None
 
 def compare_nodes(a, b):
-	#if scalars[a] > scalars[b]:
 	# Adhitya: Testing spatial ordering
-	if a > b:
+	#if a > b:
+	if scalars[a] > scalars[b]:
 		return 1
 	else:
 		return -1
@@ -41,6 +41,7 @@ def traverse(i, root, parent_node):
 	#print root, scalars[root], i
 	global index
 	index_map[root] = index
+	inverse_index_map[index] = root
 	index += 1
 	visited[root] = True
 	adjacency[root].sort(compare_nodes)
@@ -76,16 +77,17 @@ def preorder(tree, right_dictionary, parent_dictionary, label_dictionary, differ
 		preorder(tree.left, right_dictionary, parent_dictionary, label_dictionary, difference_dictionary, pairs_dictionary)
 		preorder(tree.right, right_dictionary, parent_dictionary, label_dictionary, difference_dictionary, pairs_dictionary)
 
-def right_leaf(tree):
-	if(tree == None):
+# return the right most node for a given node 
+def right_leaf(node):
+	if (node == None):
 		return
-	elif(tree.right == None):
-		if(tree.left != None):
-			return right_leaf(tree.left)
+	elif (node.right == None):
+		if (node.left != None):
+			return right_leaf(node.left)
 		else:
-			return tree.value
+			return node.value
 	else:
-		return right_leaf(tree.right)
+		return right_leaf(node.right)
 		
 		
 def get_merge_tree():
@@ -139,6 +141,12 @@ def get_persistent_pairs():
 			if (node1 in scalars.keys()) and (node2 in scalars.keys()):
 				pairs[node1] = node2
 				pairs[node2] = node1
+
+def initialize_tree(root):
+	tree = Tree()
+	tree.value = root
+	tree.parent = tree
+	return tree
 	
 def write_graph():
 	# Print the graph
@@ -148,16 +156,12 @@ def write_graph():
 
 	#print sorted(inverse_index_map.keys(), reverse = True)
 
+	for node in inverse_index_map.keys():
+		graph_file.write(get_node(node, pairs_dictionary, inverse_index_map, label_dictionary))
+
 	for i in inverse_index_map.keys():
 		#print inverse_index_map[i], i, r1[i], p1[i], l1[i], d1[i]
-
-		if parent_dictionary[i] != 0:
-			node1 = "\"" + str(inverse_index_map[i]) + " " +str(round(scalars[inverse_index_map[i]],4)) + ' ('+str(i)+')' +"\""
-			connector = ' -> '
-			node2 = "\""+ str(inverse_index_map[parent_dictionary[i]]) + " " + str(round(scalars[inverse_index_map[parent_dictionary[i]]],4)) + ' ('+str(parent_dictionary[i])+')' +"\""
-			end = ';'
-			line = node2 + connector + node1 + end +'\n'
-			graph_file.write(line)
+		graph_file.write(get_connectivity(i, parent_dictionary, inverse_index_map))
 
 	graph_file.write('}')
 	graph_file.close()
@@ -175,20 +179,20 @@ def save_dictionaries():
 	save_dictionary(pairs_dictionary, file_name, PAIRS_NODE_PREFIX)
 	save_dictionary(inverse_index_map, file_name, MAPPING_NODE_PREFIX)
 	
+# start
 root = get_merge_tree()
+
 get_persistent_pairs()
 
-tree = Tree()
-tree.value = root
-tree.parent = tree
+tree = initialize_tree(root)
+
 traverse(0, root, tree)
 
 preorder(tree, right_dictionary, parent_dictionary, label_dictionary, difference_dictionary, pairs_dictionary)
 
-# store inverse of index map
-inverse_index_map = {v: k for k, v in index_map.iteritems()}
 write_graph()
 
 save_dictionaries()
 
 print file_name, 'Done :)'
+

@@ -271,3 +271,26 @@ def save_matrix(dictionary, filenames, identifier):
 	matrix_file_path = get_output_path(current_path(), matrix_file_arguments, folder_name = MATRICES_FOLDER)
 	with open(matrix_file_path, 'wb') as handle:
 		pickle.dump(dictionary, handle)
+
+# used for printing in split-make-graph-*.py
+def get_label(index, pairs, mappings, labels):
+	scalar = round(labels[index], 3)
+	label = str(index) + " [" + str(pairs[index]) + "]" + "\\n"
+	label += str(mappings[index]) + "\\n"
+	label += str(scalar)
+	label_attribute = "label=""\"" + label +"\""
+	return label_attribute
+
+def get_node(index, pairs, mappings, labels):
+	label_attribute = get_label(index, pairs, mappings, labels)
+	return str(mappings[index]) + " [" + label_attribute + "]\n"
+
+def get_connectivity(index, parent, mapping):
+	if parent[index] != 0:
+		node1 = str(mapping[index])
+		connector = ' -> '
+		node2 = str(mapping[parent[index]])
+		line = node2 + connector + node1 + '\n'
+		return line
+	else:
+		return ''

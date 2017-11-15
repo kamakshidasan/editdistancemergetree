@@ -20,9 +20,19 @@ label_dictionary = {}
 difference_dictionary = {}
 pairs_dictionary = {}
 
-level_nodes_order = []
-level_nodes_dictionary = {}
+level_order_nodes = []
+nodes_dictionary = {}
 restructured_nodes_dictionary = {}
+
+restructured_index = 1
+restructured_index_map = {}
+restructured_inverse_index_map = {}
+
+restructured_right ={}
+restructured_parent = {}
+restructured_label = {}
+restructured_difference = {}
+restructured_pairs = {}
 
 root = None
 
@@ -62,7 +72,7 @@ def traverse(i, root, parentNode):
 			traverse(j, node, current)
 
 
-def preorder(tree, right_dictionary, parent_dictionary, label_dictionary, difference_dictionary, pairs_dictionary):
+def preorder(tree, index_map, right_dictionary, parent_dictionary, label_dictionary, difference_dictionary, pairs_dictionary):
 	if (tree == None):
 		return
 	else:
@@ -79,46 +89,22 @@ def preorder(tree, right_dictionary, parent_dictionary, label_dictionary, differ
 
 		# print tree.value, index_map[tree.value], scalars[tree.value], parent_dictionary[index_map[tree.value]]
 
-		preorder(tree.left, right_dictionary, parent_dictionary, label_dictionary, difference_dictionary, pairs_dictionary)
-		preorder(tree.right, right_dictionary, parent_dictionary, label_dictionary, difference_dictionary, pairs_dictionary)
+		preorder(tree.left, index_map, right_dictionary, parent_dictionary, label_dictionary, difference_dictionary, pairs_dictionary)
+		preorder(tree.right, index_map, right_dictionary, parent_dictionary, label_dictionary, difference_dictionary, pairs_dictionary)
 
-
-def right_leaf(tree):
-	if (tree == None):
+# return the right most node for a given node 
+def right_leaf(node):
+	if (node == None):
 		return
-	elif (tree.right == None):
-		if (tree.left != None):
-			return right_leaf(tree.left)
+	elif (node.right == None):
+		if (node.left != None):
+			return right_leaf(node.left)
 		else:
-			return tree.value
+			return node.value
 	else:
-		return right_leaf(tree.right)
+		return right_leaf(node.right)
 
-
-# Function to traverse level order traversal of tree
-def traverseLevelOrder(root):
-	h = height(root)
-	for i in range(1, h + 1):
-		traverseGivenLevel(root, i)
-	# print ''
-
-
-def traverseGivenLevel(root, level):
-	if root is None:
-		return
-	if level == 1:
-		# Create arrays and mappings
-		# print root.value
-		level_nodes_order.append(root)
-		level_nodes_dictionary[root.value] = root
-		newNode = Tree()
-		newNode.value = root.value
-		restructured_nodes_dictionary[root.value] = newNode
-	elif level > 1:
-		traverseGivenLevel(root.left, level - 1)
-		traverseGivenLevel(root.right, level - 1)
-
-
+# return the height for a given node 
 def height(node):
 	if node is None:
 		return 0
@@ -130,161 +116,210 @@ def height(node):
 		else:
 			return rheight + 1
 
+# Function to traverse level order traversal of tree
+def traverse_level_order(root):
+	h = height(root)
+	for i in range(1, h + 1):
+		traverse_level(root, i)
+	# print ''
+
+
+# Create arrays and mappings
+def traverse_level(root, level):
+	if root is None:
+		return
+	if level == 1:
+		#print root.value
+		
+		# store the node object of the tree [without restructuring]
+		level_order_nodes.append(root)
+		# create a mapping from vertex id to its object
+		nodes_dictionary[root.value] = root
+
+		# create a new node for the restructured tree with the same vertex id
+		newNode = Tree()
+		newNode.value = root.value
+
+		# map newly created nodes with their objects
+		restructured_nodes_dictionary[root.value] = newNode
+
+		# Parent for each node will remain the same with any restructuring
+		restructured_nodes_dictionary[root.value].parent = root.parent
+	elif level > 1:
+		traverse_level(root.left, level - 1)
+		traverse_level(root.right, level - 1)
+
+def make_restructured_tree(tree):
+	
+	# traverse the tree in level order and create a duplicate object for each node
+	traverse_level_order(tree)
+
+	# Remove global minimum and its pair from restructuring
+	# Adhitya knows this is necessary. But has forgotten why. 
+
+	# We traversed in level order [bound to be the first node]
+	global_minimum = level_order_nodes[0]
+	global_minimum_pair = nodes_dictionary[pairs[global_minimum.value]]
+	level_order_nodes.remove(global_minimum)
+	level_order_nodes.remove(global_minimum_pair)
+
+	#print global_minimum.value, global_minimum_pair.value
+	restructured_minimum = level_order_nodes[0].value
+
+	for node in level_order_nodes:
+		left_node = None
+		right_node = None
+		paired_node = pairs[node.value]
+
+		# Then the first node is a saddle
+		if len(adjacency[paired_node]) == 1:
+			current = nodes_dictionary[paired_node].parent
+			# Current node itself is on the left
+			if current.value == node.value:
+				# If node on right side, make it left
+				if paired_node == current.right.value:
+					left_node = paired_node
+					right_node = current.left.value
+				# If node on left side, it will remain the same
+				else:
+					left_node = paired_node
+					right_node = current.right.value
+			# There is more than one node in the monotone upwards path to the saddle
+			else:
+				while current.parent.value != node.value:
+					current = current.parent
+				# If node on right side, make it left
+				if current.parent.right.value == current.value:
+					left_node = current.value
+					right_node = current.parent.left.value
+				# If node on left side, it will remain the same
+				else:
+					left_node = current.value
+					right_node = current.parent.right.value
+			restructured_nodes_dictionary[node.value].left = restructured_nodes_dictionary[left_node]
+			restructured_nodes_dictionary[node.value].right = restructured_nodes_dictionary[right_node]
+
+	# Remember global minimum was removed? [Current root is made the left child for the returning node]
+	# Pair of global minimum would have been considered during the restructuring
+	restructured_nodes_dictionary[global_minimum.value].left = restructured_nodes_dictionary[restructured_minimum]
+
+	# get the root of this restructured tree
+	restructured_tree = restructured_nodes_dictionary[global_minimum.value]
+	return restructured_tree
+
 def restructured_preorder(root):
-	global index
+	global restructured_index
 	if root != None:
-		index_map[root.value] = index
-		line = str(root.value) + ' ' + '[' + 'label=' + "\"" + str(root.value) + " " + str(round(scalars[root.value], 4)) + ' (' + str(index) + ')' + "\"" + ']' + '\n'
-		graph_file.write(line)
-		index += 1
+		restructured_index_map[root.value] = restructured_index
+		restructured_inverse_index_map [restructured_index] = root.value
+		restructured_index += 1
 		restructured_preorder(root.left)
 		restructured_preorder(root.right)
-		
-# Get merge tree path
-tree_file_arguments = [tree_type, TREE_INFIX, file_name, CSV_EXTENSION]
-tree_file_path = get_output_path(file_path, tree_file_arguments, folder_name = TREES_FOLDER)
 
-# Read merge tree file
-with open(tree_file_path, 'rb') as csvfile:
-	csvfile.readline()
-	spamreader = csv.reader(csvfile, delimiter=' ')
-	for r in spamreader:
-		row = r[0].split(',')
-		node1 = int(row[0])
-		node2 = int(row[1])
+def get_merge_tree():
+	# Get merge tree path
+	tree_file_arguments = [tree_type, TREE_INFIX, file_name, CSV_EXTENSION]
+	tree_file_path = get_output_path(file_path, tree_file_arguments, folder_name = TREES_FOLDER)
 
-		scalars[node1] = float(row[2])
-		scalars[node2] = float(row[3])
+	# Read merge tree file
+	with open(tree_file_path, 'rb') as csvfile:
+		csvfile.readline()
+		spamreader = csv.reader(csvfile, delimiter=' ')
+		for r in spamreader:
+			row = r[0].split(',')
+			node1 = int(row[0])
+			node2 = int(row[1])
 
-		visited[node1] = False
-		visited[node2] = False
+			scalars[node1] = float(row[2])
+			scalars[node2] = float(row[3])
 
-		if node1 not in adjacency.keys():
-			adjacency[node1] = []
+			visited[node1] = False
+			visited[node2] = False
 
-		if node2 not in adjacency.keys():
-			adjacency[node2] = []
+			if node1 not in adjacency.keys():
+				adjacency[node1] = []
 
-		adjacency[node1].append(node2)
-		adjacency[node2].append(node1)
+			if node2 not in adjacency.keys():
+				adjacency[node2] = []
 
-for i in adjacency.keys():
-	if len(adjacency[i]) == 1:
-		if (scalars[i] < scalars[adjacency[i][0]]):
-			root = i
+			adjacency[node1].append(node2)
+			adjacency[node2].append(node1)
 
-# Get persistence pairs
-pairs_file_arguments = [tree_type, PAIRS_INFIX, file_name, CSV_EXTENSION]
-pairs_file_path = get_output_path(file_path, pairs_file_arguments, folder_name = PAIRS_FOLDER)
+	for i in adjacency.keys():
+		if len(adjacency[i]) == 1:
+			if (scalars[i] < scalars[adjacency[i][0]]):
+				root = i
+	return root
 
-with open(pairs_file_path, 'rb') as persistence_pairs:
-	persistence_pairs.readline()
-	spamreader = csv.reader(persistence_pairs, delimiter=' ')
-	for r in spamreader:
-		row = r[0].split(',')
-		node1 = int(row[0])
-		node2 = int(row[1])
+def get_persistent_pairs():
+	# Get persistence pairs
+	pairs_file_arguments = [tree_type, PAIRS_INFIX, file_name, CSV_EXTENSION]
+	pairs_file_path = get_output_path(file_path, pairs_file_arguments, folder_name = PAIRS_FOLDER)
 
-		if (node1 in scalars.keys()) and (node2 in scalars.keys()):
-			pairs[node1] = node2
-			pairs[node2] = node1
+	with open(pairs_file_path, 'rb') as persistence_pairs:
+		persistence_pairs.readline()
+		spamreader = csv.reader(persistence_pairs, delimiter=' ')
+		for r in spamreader:
+			row = r[0].split(',')
+			node1 = int(row[0])
+			node2 = int(row[1])
 
-tree = Tree()
-tree.value = root
-tree.parent = tree
+			if (node1 in scalars.keys()) and (node2 in scalars.keys()):
+				pairs[node1] = node2
+				pairs[node2] = node1
+
+def initialize_tree(root):
+	tree = Tree()
+	tree.value = root
+	tree.parent = tree
+	return tree
+
+def write_graph(right_dictionary, parent_dictionary, label_dictionary, difference_dictionary, pairs_dictionary, inverse_map):
+	# Print the graph
+	graph_file_path = get_output_path(file_path, [file_name, TXT_EXTENSION], folder_name = GRAPHS_FOLDER)
+	graph_file = open(graph_file_path, 'w')
+	graph_file.write('digraph {\n')
+
+	for node in inverse_map.keys():
+		graph_file.write(get_node(node, pairs_dictionary, inverse_map, label_dictionary))
+
+	for node in inverse_map.keys():
+		graph_file.write(get_connectivity(node, parent_dictionary, inverse_map))
+
+	graph_file.write('}')
+	graph_file.close()
+
+	# write graph as image
+	image_file_path = get_output_path(file_path, [file_name, PNG_EXTENSION], folder_name = IMAGES_FOLDER)
+	os.system('dot -Tpng ' + graph_file_path + ' > ' + image_file_path)
+
+def save_dictionaries():
+	# save dictionaries to respective files
+	save_dictionary(restructured_right, file_name, RIGHT_NODE_PREFIX)
+	save_dictionary(restructured_parent, file_name, PARENT_NODE_PREFIX)
+	save_dictionary(restructured_label, file_name, LABEL_NODE_PREFIX)
+	save_dictionary(restructured_difference, file_name, DIFFERENCE_NODE_PREFIX)
+	save_dictionary(restructured_pairs, file_name, PAIRS_NODE_PREFIX)
+	save_dictionary(restructured_inverse_index_map, file_name, MAPPING_NODE_PREFIX)
+
+# start
+root = get_merge_tree()
+
+get_persistent_pairs()
+
+tree = initialize_tree(root)
+
 traverse(0, root, tree)
 
-preorder(tree, right_dictionary, parent_dictionary, label_dictionary, difference_dictionary, pairs_dictionary)
-traverseLevelOrder(tree)
+preorder(tree, index_map, right_dictionary, parent_dictionary, label_dictionary, difference_dictionary, pairs_dictionary)
 
-# Make parent of each node syncronized
-for node in level_nodes_order:
-	restructured_nodes_dictionary[node.value].parent = level_nodes_dictionary[node.value].parent
+restructured_tree = make_restructured_tree(tree)
 
-# Remove global minimum and its pair in level order traversal
-global_minimum = level_nodes_order[0]
-global_minimum_pair = level_nodes_dictionary[pairs[global_minimum.value]]
-level_nodes_order.remove(global_minimum)
-level_nodes_order.remove(global_minimum_pair)
-
-#print global_minimum.value, global_minimum_pair.value
-restructured_minimum = level_nodes_order[0].value
-
-for node in level_nodes_order:
-	left_node = None
-	right_node = None
-	paired_node = pairs[node.value]
-
-	# Then the first node is a saddle
-	if len(adjacency[paired_node]) == 1:
-		current = level_nodes_dictionary[paired_node].parent
-		# Current node itself is on the left
-		if current.value == node.value:
-			# If node on right side, make it left
-			if paired_node == current.right.value:
-				left_node = paired_node
-				right_node = current.left.value
-			# If node on left side, it will remain the same
-			else:
-				left_node = paired_node
-				right_node = current.right.value
-		# There is more than one node in the monotone upwards path to the saddle
-		else:
-			while current.parent.value != node.value:
-				current = current.parent
-			# If node on right side, make it left
-			if current.parent.right.value == current.value:
-				left_node = current.value
-				right_node = current.parent.left.value
-			# If node on left side, it will remain the same
-			else:
-				left_node = current.value
-				right_node = current.parent.right.value
-		restructured_nodes_dictionary[node.value].left = restructured_nodes_dictionary[left_node]
-		restructured_nodes_dictionary[node.value].right = restructured_nodes_dictionary[right_node]
-
-# Restore variables again for preorder and restructured_preorder
-index = 1
-index_map = {}
-right_dictionary = {}
-parent_dictionary = {}
-label_dictionary = {}
-difference_dictionary = {}
-pairs_dictionary = {}
-
-# Print the graph
-graph_file_path = get_output_path(file_path, [file_name, TXT_EXTENSION], folder_name = GRAPHS_FOLDER)
-graph_file = open(graph_file_path, 'w')
-graph_file.write('digraph {\n')
-
-restructured_nodes_dictionary[global_minimum.value].left = restructured_nodes_dictionary[restructured_minimum]
-
-restructured_tree = restructured_nodes_dictionary[global_minimum.value]
+# now that the restructured tree is created, make the dictionaries coherrent
 restructured_preorder(restructured_tree)
+preorder(restructured_tree, restructured_index_map, restructured_right, restructured_parent, restructured_label, restructured_difference, restructured_pairs)
 
-for node in restructured_nodes_dictionary.keys():
-	# Prevent self loop for global minimum
-	if node != global_minimum.value:
-		line = str(restructured_nodes_dictionary[node].parent.value) + '->' + str(restructured_nodes_dictionary[node].value) + '\n'
-		graph_file.write(line)
-
-graph_file.write('}')
-graph_file.close()
-
-preorder(restructured_tree, right_dictionary, parent_dictionary, label_dictionary, difference_dictionary, pairs_dictionary)
-
-inv_map = {v: k for k, v in index_map.iteritems()}
-
-# write graph as image
-image_file_path = get_output_path(file_path, [file_name, PNG_EXTENSION], folder_name = IMAGES_FOLDER)
-os.system('dot -Tpng ' + graph_file_path + ' > ' + image_file_path)
-
-# save dictionaries to respective files
-save_dictionary(right_dictionary, file_name, RIGHT_NODE_PREFIX)
-save_dictionary(parent_dictionary, file_name, PARENT_NODE_PREFIX)
-save_dictionary(label_dictionary, file_name, LABEL_NODE_PREFIX)
-save_dictionary(difference_dictionary, file_name, DIFFERENCE_NODE_PREFIX)
-save_dictionary(pairs_dictionary, file_name, PAIRS_NODE_PREFIX)
-save_dictionary(inv_map, file_name, MAPPING_NODE_PREFIX)
+write_graph(restructured_right, restructured_parent, restructured_label, restructured_difference, restructured_pairs, restructured_inverse_index_map)
 
 print file_name, 'Done :)'
+
