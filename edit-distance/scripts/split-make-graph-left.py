@@ -21,7 +21,7 @@ difference_dictionary = {}
 pairs_dictionary = {}
 
 level_order_nodes = []
-nodes_dictionary = {}
+level_nodes_dictionary = {}
 restructured_nodes_dictionary = {}
 
 restructured_index = 1
@@ -134,7 +134,7 @@ def traverse_level(root, level):
 		# store the node object of the tree [without restructuring]
 		level_order_nodes.append(root)
 		# create a mapping from vertex id to its object
-		nodes_dictionary[root.value] = root
+		level_nodes_dictionary[root.value] = root
 
 		# create a new node for the restructured tree with the same vertex id
 		newNode = Tree()
@@ -159,7 +159,7 @@ def make_restructured_tree(tree):
 
 	# We traversed in level order [bound to be the first node]
 	global_minimum = level_order_nodes[0]
-	global_minimum_pair = nodes_dictionary[pairs[global_minimum.value]]
+	global_minimum_pair = level_nodes_dictionary[pairs[global_minimum.value]]
 	level_order_nodes.remove(global_minimum)
 	level_order_nodes.remove(global_minimum_pair)
 
@@ -173,7 +173,7 @@ def make_restructured_tree(tree):
 
 		# Then the first node is a saddle
 		if len(adjacency[paired_node]) == 1:
-			current = nodes_dictionary[paired_node].parent
+			current = level_nodes_dictionary[paired_node].parent
 			# Current node itself is on the left
 			if current.value == node.value:
 				# If node on right side, make it left
