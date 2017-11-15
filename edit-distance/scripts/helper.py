@@ -1,4 +1,4 @@
-import os, re, shutil, pickle, inspect, csv
+import os, re, shutil, pickle, inspect, csv, sys
 
 # List of constants
 CSV_EXTENSION = '.csv'

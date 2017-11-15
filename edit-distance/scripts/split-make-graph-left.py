@@ -321,5 +321,7 @@ preorder(restructured_tree, restructured_index_map, restructured_right, restruct
 
 write_graph(restructured_right, restructured_parent, restructured_label, restructured_difference, restructured_pairs, restructured_inverse_index_map)
 
+save_dictionaries()
+
 print file_name, 'Done :)'
 
