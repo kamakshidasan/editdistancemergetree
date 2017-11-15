@@ -49,19 +49,21 @@ class Node(object):
 		self.scalar = scalar
 		self.persistence = persistence
 		self.parent = None
-		self.merged = []
+		self.merged_nodes = []
 		self.children = []
 		self.pairs = []
+		self.merged = False
+		self.preorder_index = None
 
 	def add_child(self, child):
 		self.children.append(child)
-	
-	def add_node(self, node):
-		self.merged.append(node)
+
+	def merge_node(self, node):
+		self.merged_nodes.append(node)
 
 	def add_pair(self, pair):
 		self.pairs.append(pair)
-	
+
 	def is_leaf(self):
 		return (self.children == None)
 
@@ -70,7 +72,10 @@ class Node(object):
 
 	def is_saddle(self):
 		return ((not(self.is_root())) and (not(self.is_leaf())))
-	
+
+	def has_merged_nodes(self):
+		return not not self.merged_nodes()
+
 	# simple print node function. Usage: print str(node)
 	def __str__(self):
 		return str(self.vertex) + " " + str(self.scalar) + " " + str(self.persistence)
@@ -80,7 +85,7 @@ class Node(object):
 		for child in self.children:
 			return str(child)
 
-# return the height for a given node 
+# return the height for a given node
 def height(node):
 	if node is None:
 		return 0
@@ -111,6 +116,17 @@ def traverse_level(node, level):
 			if not node.parent.is_root():
 				ratio =  (node.scalar -  node.parent.scalar)/node.persistence
 				if ratio < 0.005:
+					# transfer children of node to parent
+					node.parent.children.extend(node.children)
+					# remove children of current node after transfer
+					node.children = []
+					# make node to be merged with parent
+					node.parent.merge_node(node)
+					# remove node from children of parent
+					node.parent.children.remove(node)
+					# mark node as merged
+					# the way to access other outer nodes would be using node.parent
+					node.merged = True
 					print inverse_index_map[node.vertex], ratio, node.vertex, node.parent.vertex, node.pairs[0].vertex, 'merge'
 				#else:
 				#	print inverse_index_map[node.vertex], ratio, 'chill :)'
@@ -118,6 +134,24 @@ def traverse_level(node, level):
 		# traverse backwards
 		for child in reversed(node.children):
 			traverse_level(child, level - 1)
+
+preorder_index = 1
+
+def preorder(node):
+	global preorder_index
+	if node is None:
+		return
+
+	node.preorder_index = preorder_index
+	if not node.is_root():
+		print preorder_index, node, node.parent.vertex
+	else:
+		print preorder_index, node
+
+	preorder_index+=1
+
+	for child in node.children:
+		preorder(child)
 
 root = None
 tree_nodes = [None]
@@ -134,8 +168,8 @@ for index in parent_dictionary.keys():
 	node = Node(vertex_id, scalar_value, persistence_value)
 	tree_nodes.append(node)
 
-	print str(node)
-	
+	#print str(node)
+
 	if parent_dictionary[index] == 0:
 		root = node
 	else:
@@ -154,3 +188,5 @@ for index in parent_dictionary.keys():
 del tree_nodes
 
 traverse_level_order(root)
+
+preorder(root)
