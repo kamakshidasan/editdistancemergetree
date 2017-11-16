@@ -172,12 +172,12 @@ def write_graph():
 	
 def save_dictionaries():
 	# save dictionaries to respective files
-	save_dictionary(right_dictionary, file_name, RIGHT_NODE_PREFIX)
-	save_dictionary(parent_dictionary, file_name, PARENT_NODE_PREFIX)
-	save_dictionary(label_dictionary, file_name, LABEL_NODE_PREFIX)
-	save_dictionary(difference_dictionary, file_name, DIFFERENCE_NODE_PREFIX)
-	save_dictionary(pairs_dictionary, file_name, PAIRS_NODE_PREFIX)
-	save_dictionary(inverse_index_map, file_name, MAPPING_NODE_PREFIX)
+	save_dictionary(right_dictionary, file_name, RIGHT_NODE_SUFFIX)
+	save_dictionary(parent_dictionary, file_name, PARENT_NODE_SUFFIX)
+	save_dictionary(label_dictionary, file_name, LABEL_NODE_SUFFIX)
+	save_dictionary(difference_dictionary, file_name, DIFFERENCE_NODE_SUFFIX)
+	save_dictionary(pairs_dictionary, file_name, PAIRS_NODE_SUFFIX)
+	save_dictionary(inverse_index_map, file_name, MAPPING_NODE_SUFFIX)
 	
 # start
 root = get_merge_tree()

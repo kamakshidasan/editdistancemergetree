@@ -295,12 +295,12 @@ def write_graph(right_dictionary, parent_dictionary, label_dictionary, differenc
 
 def save_dictionaries():
 	# save dictionaries to respective files
-	save_dictionary(restructured_right, file_name, RIGHT_NODE_PREFIX)
-	save_dictionary(restructured_parent, file_name, PARENT_NODE_PREFIX)
-	save_dictionary(restructured_label, file_name, LABEL_NODE_PREFIX)
-	save_dictionary(restructured_difference, file_name, DIFFERENCE_NODE_PREFIX)
-	save_dictionary(restructured_pairs, file_name, PAIRS_NODE_PREFIX)
-	save_dictionary(restructured_inverse_index_map, file_name, MAPPING_NODE_PREFIX)
+	save_dictionary(restructured_right, file_name, RIGHT_NODE_SUFFIX)
+	save_dictionary(restructured_parent, file_name, PARENT_NODE_SUFFIX)
+	save_dictionary(restructured_label, file_name, LABEL_NODE_SUFFIX)
+	save_dictionary(restructured_difference, file_name, DIFFERENCE_NODE_SUFFIX)
+	save_dictionary(restructured_pairs, file_name, PAIRS_NODE_SUFFIX)
+	save_dictionary(restructured_inverse_index_map, file_name, MAPPING_NODE_SUFFIX)
 
 # start
 root = get_merge_tree()

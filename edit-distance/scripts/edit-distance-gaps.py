@@ -19,20 +19,20 @@ dictionary2 = get_output_path(file_path, [filename2], folder_name = DICTIONARY_F
 results_path = get_output_path(file_path, [EDIT_DISTANCE_RESULT, CSV_EXTENSION], folder_name = RESULTS_FOLDER)
 
 # Get right-most node for each node
-right1 = get_dictionary(file_path, [filename1, RIGHT_NODE_PREFIX])
-right2 = get_dictionary(file_path, [filename2, RIGHT_NODE_PREFIX])
+right1 = get_dictionary(file_path, [filename1, RIGHT_NODE_SUFFIX])
+right2 = get_dictionary(file_path, [filename2, RIGHT_NODE_SUFFIX])
 
 # Get parent of each node
-parent1 = get_dictionary(file_path, [filename1, PARENT_NODE_PREFIX])
-parent2 = get_dictionary(file_path, [filename2, PARENT_NODE_PREFIX])
+parent1 = get_dictionary(file_path, [filename1, PARENT_NODE_SUFFIX])
+parent2 = get_dictionary(file_path, [filename2, PARENT_NODE_SUFFIX])
 
 # Get function value of each node
-label1 = get_dictionary(file_path, [filename1, LABEL_NODE_PREFIX])
-label2 = get_dictionary(file_path, [filename2, LABEL_NODE_PREFIX])
+label1 = get_dictionary(file_path, [filename1, LABEL_NODE_SUFFIX])
+label2 = get_dictionary(file_path, [filename2, LABEL_NODE_SUFFIX])
 
 # Get persistence of each node
-difference1 = get_dictionary(file_path, [filename1, DIFFERENCE_NODE_PREFIX])
-difference2 = get_dictionary(file_path, [filename2, DIFFERENCE_NODE_PREFIX])
+difference1 = get_dictionary(file_path, [filename1, DIFFERENCE_NODE_SUFFIX])
+difference2 = get_dictionary(file_path, [filename2, DIFFERENCE_NODE_SUFFIX])
 
 # Get size of both the trees
 size1 = len(parent1.keys())

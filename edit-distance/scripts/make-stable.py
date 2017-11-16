@@ -7,22 +7,22 @@ file_path = os.path.abspath(inspect.getfile(inspect.currentframe()))
 filename = sys.argv[1]
 
 # Get right-most node for each node
-right_dictionary = get_dictionary(file_path, [filename, RIGHT_NODE_PREFIX])
+right_dictionary = get_dictionary(file_path, [filename, RIGHT_NODE_SUFFIX])
 
 # Get parent of each node
-parent_dictionary = get_dictionary(file_path, [filename, PARENT_NODE_PREFIX])
+parent_dictionary = get_dictionary(file_path, [filename, PARENT_NODE_SUFFIX])
 
 # Get function value of each node
-label_dictionary = get_dictionary(file_path, [filename, LABEL_NODE_PREFIX])
+label_dictionary = get_dictionary(file_path, [filename, LABEL_NODE_SUFFIX])
 
 # Get persistence of each node
-difference_dictionary = get_dictionary(file_path, [filename, DIFFERENCE_NODE_PREFIX])
+difference_dictionary = get_dictionary(file_path, [filename, DIFFERENCE_NODE_SUFFIX])
 
 # Get pairs of each node
-pairs_dictionary = get_dictionary(file_path, [filename, PAIRS_NODE_PREFIX])
+pairs_dictionary = get_dictionary(file_path, [filename, PAIRS_NODE_SUFFIX])
 
 # Get vertex indices for each node
-index_mapping = get_dictionary(file_path, [filename, MAPPING_NODE_PREFIX])
+index_mapping = get_dictionary(file_path, [filename, MAPPING_NODE_SUFFIX])
 
 # Get size of both the trees
 size = len(parent_dictionary.keys())
@@ -114,20 +114,21 @@ def traverse_level(node, level):
 		if node.is_saddle():
 			# lets not tinker with the root
 			if not node.parent.is_root():
-				ratio =  (node.scalar -  node.parent.scalar)/node.persistence
+				parent = node.parent
+				ratio =  (node.scalar -  parent.scalar)/node.persistence
 				if ratio < 0.005:
 					# transfer children of node to parent
-					node.parent.children.extend(node.children)
+					parent.children.extend(node.children)
 					# remove children of current node after transfer
 					node.children = []
 					# make node to be merged with parent
-					node.parent.merge_node(node)
+					parent.merge_node(node)
 					# remove node from children of parent
-					node.parent.children.remove(node)
+					parent.children.remove(node)
 					# mark node as merged
 					# the way to access other outer nodes would be using node.parent
 					node.merged = True
-					print inverse_index_map[node.vertex], ratio, node.vertex, node.parent.vertex, node.pairs[0].vertex, 'merge'
+					print inverse_index_map[node.vertex], ratio, node.vertex, parent.vertex, node.pairs[0].vertex, 'merge'
 				#else:
 				#	print inverse_index_map[node.vertex], ratio, 'chill :)'
 	elif level > 1:

@@ -16,12 +16,12 @@ SCREENSHOT_INFIX = '-screenshot-'
 COMPARE_PREFIX = 'compare-'
 EDIT_DISTANCE_RESULT = 'results'
 
-RIGHT_NODE_PREFIX = '-right'
-PARENT_NODE_PREFIX = '-parent'
-LABEL_NODE_PREFIX = '-labels'
-DIFFERENCE_NODE_PREFIX = '-difference'
-PAIRS_NODE_PREFIX = '-pairs'
-MAPPING_NODE_PREFIX = '-mapping'
+RIGHT_NODE_SUFFIX = '-right'
+PARENT_NODE_SUFFIX = '-parent'
+LABEL_NODE_SUFFIX = '-labels'
+DIFFERENCE_NODE_SUFFIX = '-difference'
+PAIRS_NODE_SUFFIX = '-pairs'
+MAPPING_NODE_SUFFIX = '-mapping'
 
 TREE_TYPE_SPLIT = 'split'
 
@@ -57,6 +57,7 @@ COMPUTE_SCRIPT = 'compute.py'
 SPLIT_MAKE_GRAPH_SCRIPT = 'split-make-graph.py'
 SPLIT_MAKE_GRAPH_LEFT_SCRIPT = 'split-make-graph-left.py'
 MAKE_IMAGE_SCRIPT = 'make-image.sh'
+MAKE_STABLE_SCRIPT = 'make-stable.py'
 
 INFINITY = float('inf')
 

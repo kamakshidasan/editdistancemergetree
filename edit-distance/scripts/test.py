@@ -33,23 +33,24 @@ def print_statement():
 			count+=1
 
 	# Delete script after execution [Please be nice :)]
-	#statement += 'rm -- \"$0\"'
+	statement += 'rm -- \"$0\"'
 	return statement
 
 # Basically print Trump's speeches
 def print_random_statements():
 	statement = ""
 	for i in range(0,9):
-		[first, second] = (randint(1,199),randint(1,199))
-		statement += 'python edit-distance-gaps.py tv_'+str(first) + ' tv_'+str(second) + '\n'
-		statement += 'python print-gaps.py tv_'+str(first) + ' tv_'+str(second) + '\n'
+		random_first = randint(1,highest-1)
+		random_second = randint(1,highest-1)
+		statement += 'python edit-distance-gaps.py tv_'+str(random_first) + ' tv_'+str(random_second) + '\n'
+		statement += 'python print-gaps.py tv_'+str(random_first) + ' tv_'+str(random_second) + '\n'
 	# Delete script after execution [Please be nice :)]
 	statement += 'rm -- \"$0\"'
 	return statement
 
 for i in range(0, cores):
-	#statement = print_statement()
-	statement = print_random_statements()
+	statement = print_statement()
+	#statement = print_random_statements()
 	f = open('script'+str(i)+'.sh', 'w')
 	f.write(statement)
 	f.close()
