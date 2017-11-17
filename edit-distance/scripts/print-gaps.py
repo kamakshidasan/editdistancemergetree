@@ -33,28 +33,10 @@ def get_style(index):
 		 style_attribute = "shape=circle style=filled fillcolor=" + colors[index]
 	return style_attribute
 
-def get_label(index, pairs, mappings, labels, costs):
-	scalar = round(labels[index], 3)
-	label = str(index) + " [" + str(pairs[index]) + "]" + "\\n"
-	label += str(mappings[index]) + "\\n"
-	label += str(scalar)
-	label_attribute = "label=""\"" + label +"\""
-	return label_attribute
-
 def get_node(index, pairs, mappings, labels, costs, color_index):
-	label_attribute = get_label(index, pairs, mappings, labels, costs)
+	label_attribute = get_label(index, pairs, mappings, labels)
 	style_attribute = get_style(color_index)
 	return str(mappings[index]) + " [" + label_attribute  + " " + style_attribute + "]\n"
-
-def get_connectivity(index, parent, mapping):
-	if parent[index] != 0:
-		node1 = str(mapping[index])
-		connector = ' -> '
-		node2 = str(mapping[parent[index]])
-		line = node2 + connector + node1 + '\n'
-		return line
-	else:
-		return ''
 
 def print_tree():
 	file_path = os.path.abspath(inspect.getfile(inspect.currentframe()))
@@ -107,7 +89,7 @@ def printIndices(dictionary, k):
 			cost = round(k[7],3)
 
 			#print i, j, operation, message, cost
-			print message
+			#print message
 
 			# according to each operation store associated mapping and cost
 			if operation in [RELABEL_IDENTIFIER]:
@@ -146,14 +128,6 @@ def printIndices(dictionary, k):
 	except:
 		#print 'Done! :)'
 		return None
-
-def find_coords(vertex_index):
-	x_dim = y_dim = z_dim = 300
-	z = vertex_index/(x_dim*y_dim)
-	xy = vertex_index - z * x_dim * y_dim
-	y = xy/x_dim
-	x = xy - y * x_dim
-	return (x, y, z)
 	
 	
 # Get the paths

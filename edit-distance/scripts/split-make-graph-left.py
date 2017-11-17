@@ -97,6 +97,7 @@ def right_leaf(node):
 	if (node == None):
 		return
 	elif (node.right == None):
+		# only for the root node
 		if (node.left != None):
 			return right_leaf(node.left)
 		else:
@@ -323,5 +324,5 @@ write_graph(restructured_right, restructured_parent, restructured_label, restruc
 
 save_dictionaries()
 
-print file_name, 'Done :)'
+print file_name, 'Graph made :)'
 

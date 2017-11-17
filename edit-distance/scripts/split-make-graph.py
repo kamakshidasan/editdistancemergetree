@@ -82,6 +82,7 @@ def right_leaf(node):
 	if (node == None):
 		return
 	elif (node.right == None):
+		# only for the root node
 		if (node.left != None):
 			return right_leaf(node.left)
 		else:

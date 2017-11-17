@@ -1,4 +1,4 @@
-import os, re, shutil, pickle, inspect, csv, sys
+import os, re, shutil, pickle, inspect, csv, sys, math
 
 # List of constants
 CSV_EXTENSION = '.csv'
@@ -48,6 +48,8 @@ IMAGES_FOLDER = 'images'
 GRAPHS_FOLDER = 'graph'
 COMPARE_GRAPHS_FOLDER = 'compare-graphs'
 COMPARE_IMAGES_FOLDER = 'compare-images'
+MERGED_GRAPHS_FOLDER = 'merged-graphs'
+MERGED_IMAGES_FOLDER = 'merged-images'
 DEBUG_FOLDER = 'debug'
 
 PYTHON_COMMAND = 'python'
@@ -272,6 +274,18 @@ def save_matrix(dictionary, filenames, identifier):
 	matrix_file_path = get_output_path(current_path(), matrix_file_arguments, folder_name = MATRICES_FOLDER)
 	with open(matrix_file_path, 'wb') as handle:
 		pickle.dump(dictionary, handle)
+
+def find_coords(vertex_index):
+	x_dim = y_dim = z_dim = 300
+	z = vertex_index/(x_dim*y_dim)
+	xy = vertex_index - z * x_dim * y_dim
+	y = xy/x_dim
+	x = xy - y * x_dim
+	return (x, y, z)
+
+def find_distance(vertex_index):
+	[x, y, z] = find_coords(vertex_index)
+	return math.sqrt(x*x + y*y + z*z)
 
 # used for printing in split-make-graph-*.py
 def get_label(index, pairs, mappings, labels):
