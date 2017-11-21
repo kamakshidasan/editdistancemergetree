@@ -29,8 +29,8 @@ for i in range(1, num_files+1):
 	split_make_graph_file = get_output_path(file_path, [SPLIT_MAKE_GRAPH_LEFT_SCRIPT], folder_name = SCRIPTS_FOLDER)
 	run_python_script(split_make_graph_file, [file_list[i]])
 	
-	make_stable_file = get_output_path(file_path, [MAKE_STABLE_SCRIPT], folder_name = SCRIPTS_FOLDER)
-	run_python_script(make_stable_file, [file_list[i]])
+	#make_stable_file = get_output_path(file_path, [MAKE_STABLE_SCRIPT], folder_name = SCRIPTS_FOLDER)
+	#run_python_script(make_stable_file, [file_list[i]])
 
 	files_left = num_files - i
 	print file_list[i], 'Done :)', files_left, ' files remaining'

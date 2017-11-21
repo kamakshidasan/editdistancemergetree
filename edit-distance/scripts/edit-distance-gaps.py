@@ -170,7 +170,7 @@ def Q1f(i1, i, j1, j):
 
 	# there is a unique matching between T1[1][i] with an empty tree: we have i gap points
 	if (not extent2):
-		Q1[i1][i][j1][j] = gap1(i) * i
+		Q1[i1][i][j1][j] = gap1(i)
 		return Q1[i1][i][j1][j]
 
 	# it is impossible to match an empty tree with T2[1][j] such that the former ends with a gap node
@@ -254,7 +254,7 @@ def Q2f(i1, i, j1, j):
 
 	# there is a unique matching between T2[1][i] with an empty tree: we have j gap points
 	elif (not extent1):
-		Q2[i1][i][j1][j] = gap2(j) * j
+		Q2[i1][i][j1][j] = gap2(j)
 		return Q2[i1][i][j1][j]
 
 	# if already created earlier, return that value instead of computing again
