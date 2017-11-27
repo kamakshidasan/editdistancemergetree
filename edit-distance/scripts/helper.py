@@ -7,6 +7,7 @@ BIN_EXTENSION = '.bin'
 VTP_EXTENSION = '.vtp'
 PNG_EXTENSION = '.png'
 DOT_EXTENSION = '.dot'
+JT_EXTENSION = '.jt'
 
 PAIRS_INFIX = '-pairs-'
 TREE_INFIX = '-tree-'
@@ -51,6 +52,7 @@ COMPARE_IMAGES_FOLDER = 'compare-images'
 MERGED_GRAPHS_FOLDER = 'merged-graphs'
 MERGED_IMAGES_FOLDER = 'merged-images'
 DEBUG_FOLDER = 'debug'
+JT_FOLDER = 'jt'
 
 PYTHON_COMMAND = 'python'
 PARAVIEW_COMMAND = 'paraview'
@@ -60,6 +62,7 @@ SPLIT_MAKE_GRAPH_SCRIPT = 'split-make-graph.py'
 SPLIT_MAKE_GRAPH_LEFT_SCRIPT = 'split-make-graph-left.py'
 MAKE_IMAGE_SCRIPT = 'make-image.sh'
 MAKE_STABLE_SCRIPT = 'make-stable.py'
+GENERATE_JT_FILES_SCRIPT = 'generate-jt-files.py'
 
 INFINITY = float('inf')
 
@@ -309,3 +312,24 @@ def get_connectivity(index, parent, mapping):
 		return line
 	else:
 		return ''
+
+# write tree for unordered traversal
+def get_jt_node(index, pairs, mapping, labels, parent, children, number_children):
+	vertex_index = mapping[index]
+	if parent[index] == 0:
+		parent_index = -1
+	else:
+		parent_index = mapping[parent[index]]
+	pair_index = mapping[pairs[index]]
+	max_node_index = -1 # Not used by Talha
+	scalar = labels[index]
+	number_children = number_children[index]
+	children_indices = children[index]
+
+	node_arguments = [index, vertex_index, parent_index, pair_index, max_node_index, scalar]
+	if number_children != 0:
+		node_arguments.append(number_children)
+		for child in children_indices:
+			node_arguments.append(child)
+
+	return  ' '.join(str(x) for x in node_arguments) + '\n'

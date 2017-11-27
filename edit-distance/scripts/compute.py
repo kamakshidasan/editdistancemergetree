@@ -334,5 +334,5 @@ SaveScreenshot(screen_file_path, magnification=1, quality=100, view=renderView1)
 
 print datetime.now() - startTime, 'Done! :)'
 
-os._exit(0)
+#os._exit(0)
 
