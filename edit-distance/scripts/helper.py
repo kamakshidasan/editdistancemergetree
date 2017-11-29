@@ -53,6 +53,7 @@ MERGED_GRAPHS_FOLDER = 'merged-graphs'
 MERGED_IMAGES_FOLDER = 'merged-images'
 DEBUG_FOLDER = 'debug'
 JT_FOLDER = 'jt'
+CLIQUE_GRAPHS_FOLDER = 'clique-graphs'
 
 PYTHON_COMMAND = 'python'
 PARAVIEW_COMMAND = 'paraview'
