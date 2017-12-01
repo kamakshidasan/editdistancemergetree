@@ -22,7 +22,7 @@ file_name = get_file_name(full_file_name)
 
 # create a new 'Legacy VTK Reader'
 vtkFile = LegacyVTKReader(FileNames=[file_path])
-simplification_percentage = 3
+simplification_percentage = 1
 
 # show data in view
 renderView1 = GetActiveViewOrCreate('RenderView')
@@ -334,5 +334,5 @@ SaveScreenshot(screen_file_path, magnification=1, quality=100, view=renderView1)
 
 print datetime.now() - startTime, 'Done! :)'
 
-#os._exit(0)
+os._exit(0)
 

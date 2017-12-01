@@ -1,12 +1,10 @@
 # This file is only present because Talha spoilt my fun of implementing unordered tree comparison
-# I really really hope he doesn't fuck it up for me.
-# First they ignore you, then they laugh at you, then they fight you, then you win.
-# Raghavendra has done the first three. Clique should win. :)
 
 from helper import *
 
 # Take the names of files as arguments
-filename =  sys.argv[1]
+file_name =  sys.argv[1]
+filename = get_file_name(file_name)
 
 # Get the paths
 file_path = os.path.abspath(inspect.getfile(inspect.currentframe()))

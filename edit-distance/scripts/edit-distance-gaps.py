@@ -2,7 +2,7 @@ import os, time
 os.system('date')
 start_time = time.time()
 
-import itertools, sys, pickle, inspect
+import itertools
 from helper import *
 
 # Only me and god knows how this code works
