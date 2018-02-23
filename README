@@ -1,1 +1,6 @@
 Scripts and Masala for Edit Distances.
+
+Usage:
+
+- python run.py
+- python test.py <cores> <start>
