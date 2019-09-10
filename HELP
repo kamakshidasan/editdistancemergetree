@@ -1,0 +1,7 @@
+```
+# Update gitignore after files have been commited
+git rm -r --cached .
+git add .
+git commit -m ".gitignore is back to normalcy"
+```
+

@@ -1,7 +1,0 @@
-# Update gitignore after files have been commited
-git rm -r --cached .
-git add .
-git commit -m ".gitignore is back to normalcy"
-
-# Recursively find and replace in all files in directory
-find pre -type f -print0 | xargs -0 sed -i 's/vgl.serc.iisc.ernet.in/vgl.csa.iisc.ac.in/g'
