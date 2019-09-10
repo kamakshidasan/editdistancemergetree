@@ -6,6 +6,7 @@ from paraview.simple import *
 import csv, os
 from datetime import datetime
 from helper import *
+from make-split-tree import *
 
 paraview.simple._DisableFirstRenderCameraReset()
 
@@ -80,7 +81,7 @@ renderView2.CameraFocalPoint = [0, 0.5, 0.0]
 
 # create Threshold for Persistence
 
-# find max persistence by iterating across the diagram! 
+# find max persistence by iterating across the diagram!
 persistence_data = servermanager.Fetch(persistenceDiagram)
 
 # Get the number of persistent points and arcs
@@ -239,7 +240,7 @@ previous_critical_index = None
 previous_critical_scalar = None
 
 with open(nodes_file_path, 'rb') as csvfile:
-	csvfile.readline() 
+	csvfile.readline()
 	spamreader = csv.reader(csvfile, delimiter=' ')
 	for r in spamreader:
 		row = r[0].split(',')
@@ -258,7 +259,7 @@ tree_file_path = get_output_path(file_path, tree_file_arguments, folder_name = T
 tree_file = open(tree_file_path, 'w')
 fieldnames = ['Node:0', 'Node:1', 'Scalar:0', 'Scalar:1']
 writer = csv.writer(tree_file, delimiter=',')
-writer.writerow(fieldnames)	
+writer.writerow(fieldnames)
 
 # Read the intermediate arcs file
 with open(arcs_file_path, 'rb') as csvfile:
@@ -332,7 +333,13 @@ screen_file_arguments = [tree_type, SCREENSHOT_INFIX, file_name, PNG_EXTENSION]
 screen_file_path = get_output_path(file_path, screen_file_arguments, folder_name = SCREENSHOT_FOLDER)
 SaveScreenshot(screen_file_path, magnification=1, quality=100, view=renderView1)
 
+# *******************************************
+# find the mappings and create dictionaries
+
+make_split_tree(file_name, file_path)
+
+#*********************************************
+
 print datetime.now() - startTime, 'Done! :)'
 
 os._exit(0)
-

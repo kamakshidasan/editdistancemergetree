@@ -59,11 +59,8 @@ PYTHON_COMMAND = 'python'
 PARAVIEW_COMMAND = 'paraview'
 
 COMPUTE_SCRIPT = 'compute.py'
-SPLIT_MAKE_GRAPH_SCRIPT = 'split-make-graph.py'
-SPLIT_MAKE_GRAPH_LEFT_SCRIPT = 'split-make-graph-left.py'
+MAKE_SPLIT_TREE_SCRIPT = 'make-split-tree.py'
 MAKE_IMAGE_SCRIPT = 'make-image.sh'
-MAKE_STABLE_SCRIPT = 'make-stable.py'
-GENERATE_JT_FILES_SCRIPT = 'generate-jt-files.py'
 
 INFINITY = float('inf')
 
@@ -174,15 +171,15 @@ def join_file_path(file_path, file_name):
 def run_python_script(script_name, arguments):
 	# python <script_name>
 	command = PYTHON_COMMAND + ' ' + script_name
-	 	
+
 	# python <script_name> <arguments>
 	# Add all the arguments to the command
 	for argument in arguments:
 		command += ' ' + argument
-	
+
 	print command
 	os.system(command)
-	
+
 # You can't send in arguments here!
 def run_paraview_script(script_name):
 	# paraview --script= <script_name>
@@ -194,7 +191,7 @@ def run_shell_script(script_name, arguments):
 
 	for argument in arguments:
 		command += ' ' + argument
-	
+
 	os.system(command)
 
 def run_jar(jar_file, arguments):
@@ -213,13 +210,13 @@ def get_dictionary(file_path, arguments):
 
 	with open(dictionary_path, 'rb') as handle:
 		current_dictionary = pickle.loads(handle.read())
-	
+
 	return current_dictionary
 
 def get_matrix(file_path, arguments):
 	# extension is always BIN
 	arguments.append(BIN_EXTENSION)
-	
+
 	# combine the filenames together
 	arguments[0:2] = [join_strings(arguments[0:2])]
 
@@ -227,12 +224,12 @@ def get_matrix(file_path, arguments):
 
 	with open(dictionary_path, 'rb') as handle:
 		current_dictionary = pickle.loads(handle.read())
-	
+
 	return current_dictionary
 
 
 def get_folder(file_path, folder_name = None):
-	# This will give you a path with the folder name appended	
+	# This will give you a path with the folder name appended
 	output_path = get_output_path(file_path, [], folder_name = folder_name)
 	return output_path
 

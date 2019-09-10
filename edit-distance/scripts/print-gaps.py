@@ -53,7 +53,7 @@ def print_tree():
 			compare_file.write(get_node(i, pairs1, index_mapping1, label1, cost1, i))
 		else:
 			compare_file.write(get_node(i, pairs1, index_mapping1, label1, cost1, GAP_NODE))
-	
+
 	# print nodes connectivity for first tree
 	for i in range(1, right1[1]+1):
 		compare_file.write(get_connectivity(i, parent1, index_mapping1))
@@ -121,15 +121,15 @@ def printIndices(dictionary, k):
 		except IndexError:
 			# This should only happen only during the first call of this function
 			pass
-			
+
 		next_comparison = dictionary[k[1]][k[2]][k[3]][k[4]]
 
 		return next_comparison
 	except:
 		#print 'Done! :)'
 		return None
-	
-	
+
+
 # Get the paths
 file_path = os.path.abspath(inspect.getfile(inspect.currentframe()))
 
@@ -245,7 +245,7 @@ for j in map2.keys():
 
 		# get vertex index of ideal mapping and current node
 		ideal_mapping = index_mapping1[ideal_index]
-		index2 = index_mapping2[j]		
+		index2 = index_mapping2[j]
 
 		print j, index2, ideal_index, ideal_mapping, 'gap?'
 
