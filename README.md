@@ -16,8 +16,8 @@ To run the code:
 
 - Place your data within a folder titled 'input'
 - For details on folders you may want to create, look into `helper.py` L#60-L#95
-- Then execute, `python run.py`
-- To run TTK parallelly, execute `python test.py <number of cores> <start_index> <end_index>`
+- Then execute, `python3 run.py`
+- To run TTK parallelly, execute `python3 test.py <number of cores> <start_index> <end_index>`
 
 ## Background
 
