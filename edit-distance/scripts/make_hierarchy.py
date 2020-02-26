@@ -199,7 +199,7 @@ def preorder(node):
 	order = {'index': 1}
 
 	def set_order(node):
-		if(node == None):
+		if(node is None):
 			return
 		else:
 			node.preorder = order['index']
@@ -446,10 +446,10 @@ def write_recon_file(node):
 	writer.writerow([len(postorder_map.keys())])
 
 	def recon_print_tree(node):
-		if(node == None):
+		if(node is None):
 			return
 		else:
-			if node.parent == None:
+			if node.parent is None:
 				parent_order = -1
 			else:
 				parent_order = node.parent.postorder
@@ -475,7 +475,7 @@ def save_tree_string(tree):
 
 		def make_tree_string(node):
 			nonlocal tree_string
-			if(node == None):
+			if(node is None):
 				return
 			else:
 				tree_string += '{'
@@ -510,7 +510,7 @@ def get_persistence_hierarchy(node):
 			parent_found = False
 
 			# keep going up the merge tree till you find a parent that itself and its pair within the range
-			while((parent_node != None) and (parent_found == False)):
+			while((parent_node is not None) and (not parent_found)):
 				if parent_node.preorder < node.preorder < parent_node.pair.preorder:
 					parent_found = True
 				else:
@@ -554,7 +554,7 @@ def print_treemap(node):
 			parent_found = False
 
 			# keep going up the merge tree till you find a parent that itself and its pair within the range
-			while((parent_node != None) and (parent_found == False)):
+			while((parent_node is not None) and (not parent_found)):
 				if parent_node.preorder < node.preorder < parent_node.pair.preorder:
 					parent_found = True
 				else:
