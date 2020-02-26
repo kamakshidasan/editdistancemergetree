@@ -23,5 +23,5 @@ To run the code:
 ## Background
 
 - For more information on Edit Distances, refer to Sridharamurthy et al., Edit distances for comparing merge trees. [[link](http://vgl.csa.iisc.ac.in/pub/paper.php?pid=054)]
-- For more information on Face Segmentation, refer to Sharma and Natarajan, On-Demand Augmentation of Contour Trees. [[link](http://vgl.serc.iisc.ernet.in/pub/paper.php?pid=055)]
+- For more information on Face Segmentation, refer to Sharma and Natarajan, On-Demand Augmentation of Contour Trees. [[link](http://vgl.csa.iisc.ac.in/pub/paper.php?pid=055)]
 
