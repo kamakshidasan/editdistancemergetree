@@ -9,7 +9,6 @@ This repository provides code to perform the following tasks:
 - Simplify scalar field using persistence diagram
 - Display critical points
 - Compute Merge Trees
-- Bottleneck/Wasserstein distances
 - Edit Distance between Merge Trees
 - Face Segmentation based on Merge Trees
 
