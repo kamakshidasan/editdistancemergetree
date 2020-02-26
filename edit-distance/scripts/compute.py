@@ -33,8 +33,8 @@ inputFileDisplay.Representation = 'Surface'
 # reset view to fit data
 renderView1.ResetCamera()
 renderView1.InteractionMode = '2D'
-renderView1.CameraPosition = [199.5, 24.5, 10000.0]
-renderView1.CameraFocalPoint = [199.5, 24.5, 0.0]
+renderView1.CameraPosition = [200, 25, 10000.0]
+renderView1.CameraFocalPoint = [200, 25, 0.0]
 inputFileDisplay.SetScalarBarVisibility(renderView1, False)
 renderView1.Update()
 
