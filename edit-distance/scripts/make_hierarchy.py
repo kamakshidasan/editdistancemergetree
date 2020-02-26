@@ -540,6 +540,58 @@ def get_persistence_hierarchy(node):
 	get_hierarchy_parent(node)
 	return hierarchy_root
 
+def print_treemap(node):
+	processed_nodes = {}
+	treemap_string = {}
+	treemap_value = {}
+	treemap_parent = {}
+	treemap_container = {}
+
+	def find_treemap_parent(node):
+		if node.preorder not in processed_nodes:
+			parent_node = node.parent
+			paired_node = node.pair
+			parent_found = False
+
+			# keep going up the merge tree till you find a parent that itself and its pair within the range
+			while((parent_node != None) and (parent_found == False)):
+				if parent_node.preorder < node.preorder < parent_node.pair.preorder:
+					parent_found = True
+				else:
+					parent_node = parent_node.parent
+
+			if not parent_found:
+				treemap_container[node.preorder] = str(node.preorder)
+				treemap_parent[node] = None
+				treemap_parent[node.pair] = node
+			else:
+				treemap_container[node.preorder] = treemap_container[parent_node.preorder] + "." + str(node.preorder)
+				treemap_parent[node.pair] = node
+				treemap_parent[node] = parent_node
+
+			treemap_string[node.preorder] = treemap_container[node.preorder] + "." + str(node.preorder)
+			treemap_string[node.pair.preorder] = treemap_container[node.preorder] + "." + str(node.pair.preorder)
+
+			treemap_value[node.pair.preorder] = node.pair.label
+			treemap_value[node.preorder] = node.label
+
+			processed_nodes[node.preorder] = True
+			processed_nodes[node.pair.preorder] = True
+
+	def get_tree_structure(node):
+		if(node == None):
+			return
+		else:
+			find_treemap_parent(node)
+			for child in node.children:
+				get_tree_structure(child)
+
+	get_tree_structure(node)
+	for key in treemap_container.keys():
+		print str(treemap_container[key]) + ","
+
+	for key in treemap_string.keys():
+		print str(treemap_string[key]) + ","+ str(int((treemap_value[key]+0.05)*1000))
 
 def save_hierarchy(hierarchy_root):
 	hierarchy_file_arguments = [file_name, JSON_EXTENSION]
