@@ -90,7 +90,7 @@ SetActiveView(None)
 
 # Create a new 'Render View'
 renderView2 = CreateView('RenderView')
-renderView2.ViewSize = [1038, 1179]
+renderView2.ViewSize = [1040, 1200]
 renderView2.AxesGrid = 'GridAxes3DActor'
 renderView2.StereoType = 0
 renderView2.Background = [0.32, 0.34, 0.43]
@@ -108,8 +108,8 @@ persistenceDiagramDisplay.Representation = 'Surface'
 # reset view to fit data
 renderView2.ResetCamera()
 renderView2.InteractionMode = '2D'
-renderView2.CameraPosition = [0.6912000179290771, 0.710545003414154, 10000.0]
-renderView2.CameraFocalPoint = [0.6912000179290771, 0.710545003414154, 0.0]
+renderView2.CameraPosition = [0.7, 0.7, 10000.0]
+renderView2.CameraFocalPoint = [0.7, 0.7, 0.0]
 renderView2.Update()
 
 # create a new 'Threshold'
@@ -212,8 +212,8 @@ SetActiveSource(vtkFile)
 
 # set active source
 SetActiveSource(contourTree)
-contourTreeDisplay_1.ScaleTransferFunction.RescaleTransferFunction(0.0, 1.17578133675e-38)
-contourTreeDisplay_1.OpacityTransferFunction.RescaleTransferFunction(0.0, 1.17578133675e-38)
+contourTreeDisplay_1.ScaleTransferFunction.RescaleTransferFunction(0.0, 0.0)
+contourTreeDisplay_1.OpacityTransferFunction.RescaleTransferFunction(0.0, 0.0)
 segmentationIdLUT = GetColorTransferFunction('RegionSize')
 
 # create a new 'Extract Surface'
@@ -312,6 +312,8 @@ Hide(tube, renderView1)
 
 SetActiveSource(topologicalSimplification)
 renderView1.Update()
+
+#######################################################################
 
 # initialize dictionaries
 scalars = {}
