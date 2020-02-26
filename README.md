@@ -2,14 +2,14 @@
 
 To be able to run code from this repository, install TTK using [these](https://topology-tool-kit.github.io/installation.html) guidlelines. This code has been tested with TTK 0.96 on Ubuntu 16.04/MacOS High Sierra. 
 
-This repository provides code to perform the following tasks.
+This repository provides code to perform the following tasks:
 
 - Display a scalar field
 - Compute its persistence diagram
 - Simplify scalar field using persistence diagram
 - Display critical points
 - Compute Merge Trees
-
+- Bottleneck/Wasserstein distances
 - Edit Distance between Merge Trees
 - Face Segmentation based on Merge Trees
 
