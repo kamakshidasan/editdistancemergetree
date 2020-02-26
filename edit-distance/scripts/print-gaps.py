@@ -16,7 +16,7 @@ def traverse(dictionary, indices):
 	if indices is None:
 		return
 	if len(indices) == 2:
-		print 'The matrix has been opened :|'
+		print ('The matrix has been opened :|')
 	if (indices[0] == S_MATRIX_IDENTIFIER):
 		traverse(S,indices)
 	elif(indices[0] == S1_MATRIX_IDENTIFIER):
@@ -24,7 +24,7 @@ def traverse(dictionary, indices):
 	elif(indices[0] == S2_MATRIX_IDENTIFIER):
 		traverse(S2, indices)
 	else:
-		print 'Error!'
+		print ('Error!')
 
 def get_style(index):
 	if index == GAP_NODE:
@@ -88,8 +88,8 @@ def printIndices(dictionary, k):
 			message = k[6]
 			cost = round(k[7],3)
 
-			#print i, j, operation, message, cost
-			#print message
+			#print (i, j, operation, message, cost)
+			#print (message)
 
 			# according to each operation store associated mapping and cost
 			if operation in [RELABEL_IDENTIFIER]:
@@ -116,7 +116,7 @@ def printIndices(dictionary, k):
 				map2[j] = GAP_NODE
 				cost2[j] = cost
 			else:
-				print 'Govinda'
+				print ('Govinda')
 
 		except IndexError:
 			# This should only happen only during the first call of this function
@@ -126,7 +126,7 @@ def printIndices(dictionary, k):
 
 		return next_comparison
 	except:
-		#print 'Done! :)'
+		#print ('Done! :)')
 		return None
 
 
@@ -193,11 +193,11 @@ try:
 	vertex_indices2 = inverse2.keys()
 
 except:
-	print "Something bad happened :(", filename1, filename2
+	print ("Something bad happened :(", filename1, filename2)
 
-print "*******"
+print ("*******")
 
-print filename1, filename2
+print (filename1, filename2)
 
 # Start tracing back from the back
 traverse(S, extents)
@@ -227,11 +227,11 @@ for i in map1.keys():
 		actual_mapping = index_mapping2[j]
 		if ideal_mapping == actual_mapping:
 			#continue
-			print i, index1, j, actual_mapping, 'cool :)'
+			print (i, index1, j, actual_mapping, 'cool :)')
 		else:
-			print i, index1, j, actual_mapping, ideal_index, ideal_mapping,'relabel?'
+			print (i, index1, j, actual_mapping, ideal_index, ideal_mapping,'relabel?')
 	else:
-		print i, index1, ideal_index, ideal_mapping, 'gap?'
+		print (i, index1, ideal_index, ideal_mapping, 'gap?')
 
 # same as above but only iterate for gaps in second tree
 for j in map2.keys():
@@ -247,9 +247,9 @@ for j in map2.keys():
 		ideal_mapping = index_mapping1[ideal_index]
 		index2 = index_mapping2[j]
 
-		print j, index2, ideal_index, ideal_mapping, 'gap?'
+		print (j, index2, ideal_index, ideal_mapping, 'gap?')
 
-print "*******"
+print ("*******")
 
 # Write the Merge Tree to file
 debug_file_arguments = [join_strings([filename1,filename2]), CSV_EXTENSION]

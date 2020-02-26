@@ -45,7 +45,7 @@ Q2 = {}
 
 # How much are we planning to compare?
 extents = [right1[1], right2[1]]
-print extents
+print (extents)
 
 # Gap cost associated with the first tree
 def gap1(i):
@@ -93,7 +93,7 @@ def isComputedEarlier(dictionary, i1, i, j1, j):
 	return bool(dictionary[i1][i][j1][j])
 
 def Qf(i1, i, j1, j):
-	#print i1, i, j1, j
+	#print (i1, i, j1, j)
 
 	# create an empty key if already not present
 	createEntry(Q, i1, i, j1, j)
@@ -113,7 +113,7 @@ def Qf(i1, i, j1, j):
 
 	# if already created earlier, return that value instead of computing again
 	if (isComputedEarlier(Q, i1, i, j1, j)):
-		#print 'Q', i1, i, j1, j, Q[i1][i][j1][j]
+		#print ('Q', i1, i, j1, j, Q[i1][i][j1][j])
 		return Q[i1][i][j1][j]
 	else:
 		# None of i or j is a gap point, then i must be matched to j
@@ -128,12 +128,12 @@ def Qf(i1, i, j1, j):
 		# take minimum of all three cases
 		Q[i1][i][j1][j] = min(zeroth, first, second)
 		
-		#print 'Q', i1, i, j1, j, Q[i1][i][j1][j]
+		#print ('Q', i1, i, j1, j, Q[i1][i][j1][j])
 		return Q[i1][i][j1][j]
 
 # i is a gap point
 def Q1f(i1, i, j1, j):
-	#print i1, i, j1, j
+	#print (i1, i, j1, j)
 
 	# create an empty key if already not present
 	createEntry(Q1, i1, i, j1, j)
@@ -144,18 +144,18 @@ def Q1f(i1, i, j1, j):
 	# there is a unique matching between T1[1][i] with an empty tree: we have i gap points
 	if (not extent2):
 		Q1[i1][i][j1][j] = gap1(i)
-		#print 'Q1', i1, i, j1, j, Q1[i1][i][j1][j]
+		#print ('Q1', i1, i, j1, j, Q1[i1][i][j1][j])
 		return Q1[i1][i][j1][j]
 
 	# it is impossible to match an empty tree with T2[1][j] such that the former ends with a gap node
 	elif (not extent1):
 		Q1[i1][i][j1][j] = INFINITY
-		#print 'Q1', i1, i, j1, j, Q1[i1][i][j1][j]
+		#print ('Q1', i1, i, j1, j, Q1[i1][i][j1][j])
 		return Q1[i1][i][j1][j]
 
 	# if already created earlier, return that value instead of computing again
 	if (isComputedEarlier(Q1, i1, i, j1, j)):
-		#print 'Q1', i1, i, j1, j, Q1[i1][i][j1][j]
+		#print ('Q1', i1, i, j1, j, Q1[i1][i][j1][j])s
 		return Q1[i1][i][j1][j]
 	else:
 		# initialize a minimum
@@ -185,12 +185,12 @@ def Q1f(i1, i, j1, j):
 		first = Q1f(i1, i - 1, j1, j) + gap1(i)
 
 		Q1[i1][i][j1][j] = min(first, zeroth, minimum)
-		#print 'Q1', i1, i, j1, j, Q1[i1][i][j1][j]
+		#print ('Q1', i1, i, j1, j, Q1[i1][i][j1][j])
 		return Q1[i1][i][j1][j]
 
 # j is a gap point
 def Q2f(i1, i, j1, j):
-	#print i1, i, j1, j
+	#print (i1, i, j1, j)
 
 	# create an empty key if already not present
 	createEntry(Q2, i1, i, j1, j)
@@ -201,18 +201,18 @@ def Q2f(i1, i, j1, j):
 	# it is impossible to match an empty tree with T1[1][j] such that the former ends with a gap node
 	if (not extent2):
 		Q2[i1][i][j1][j] = INFINITY
-		#print 'Q2', i1, i, j1, j, Q2[i1][i][j1][j]
+		#print ('Q2', i1, i, j1, j, Q2[i1][i][j1][j])
 		return Q2[i1][i][j1][j]
 
 	# there is a unique matching between T2[1][i] with an empty tree: we have j gap points
 	elif (not extent1):
 		Q2[i1][i][j1][j] = gap2(j)
-		#print 'Q2', i1, i, j1, j, Q2[i1][i][j1][j]
+		#print ('Q2', i1, i, j1, j, Q2[i1][i][j1][j])
 		return Q2[i1][i][j1][j]
 
 	# if already created earlier, return that value instead of computing again
 	if (isComputedEarlier(Q2, i1, i, j1, j)):
-		#print 'Q2', i1, i, j1, j, Q2[i1][i][j1][j]
+		#print ('Q2', i1, i, j1, j, Q2[i1][i][j1][j])
 		return Q2[i1][i][j1][j]
 
 	# if parent(j) is a gap node and j is its right child
@@ -241,18 +241,18 @@ def Q2f(i1, i, j1, j):
 		second = Q2f(i1, i, j1, j - 1) + gap2(j)
 
 		Q2[i1][i][j1][j] = min(second, zeroth, minimum)
-		#print 'Q2', i1, i, j1, j, Q2[i1][i][j1][j]
+		#print ('Q2', i1, i, j1, j, Q2[i1][i][j1][j])
 		return Q2[i1][i][j1][j]
 
 # Iterate across both the trees!
 for i1, j1 in itertools.product(range(1, size1 + 1), range(1, size2 + 1)):
 	for i in range(i1, right1[i1] + 1):
 		for j in range(j1, right2[j1] + 1):
-			#print i1, i, j1, j
+			#print (i1, i, j1, j)
 			Q1[i1][i][j1][j] = Q1f(i1, i, j1, j)
 			Q2[i1][i][j1][j] = Q2f(i1, i, j1, j)
 			Q[i1][i][j1][j] = Qf(i1, i, j1, j)
-			#print ''
+			#print ('')
 
 # Complete distance is given at the end the matrix
 difference = Q[1][right1[1]][1][right2[1]]
@@ -270,5 +270,5 @@ timestep_value = filename1.split('tv_')[1]
 csvfile.write(timestep_value + ',' + str(difference) +'\n')
 csvfile.close()
 
-print 'Difference: ', difference, 'Time Taken: ', time_taken
+print ('Difference: ', difference, 'Time Taken: ', time_taken)
 os.system('date')

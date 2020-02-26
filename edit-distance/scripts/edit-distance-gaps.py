@@ -50,7 +50,7 @@ S2 = {}
 
 # How much are we planning to compare?
 extents = [right1[1], right2[1]]
-print extents
+print (extents)
 
 # Gap cost associated with the first tree
 def gap1(i):
@@ -135,7 +135,7 @@ def Qf(i1, i, j1, j):
 		# store minimum value of all three cases
 		Q[i1][i][j1][j] = min(zeroth, first, second)
 
-		#print 'Q', i1, i, j1, j, Q[i1][i][j1][j]
+		#print ('Q', i1, i, j1, j, Q[i1][i][j1][j])
 
 		# Adhitya: thought about optimising and decided not to. 
 		# Adhitya from future: Do *not* try to optimise!
@@ -236,7 +236,7 @@ def Q1f(i1, i, j1, j):
 			k = minimum_k
 			S1[i1][i][j1][j] = [[S_MATRIX_IDENTIFIER, parent1[i] + 1, i - 1, k + 1, j], [S1_MATRIX_IDENTIFIER, i1, parent1[i], j1, k]]
 
-		#print 'Q1', i1, i, j1, j, Q1[i1][i][j1][j]
+		#print ('Q1', i1, i, j1, j, Q1[i1][i][j1][j])
 		return Q1[i1][i][j1][j]
 
 # j is a gap point
@@ -317,18 +317,18 @@ def Q2f(i1, i, j1, j):
 			k = minimum_k
 			S2[i1][i][j1][j] = [[S_MATRIX_IDENTIFIER, k + 1, i, parent2[j] + 1, j - 1], [S2_MATRIX_IDENTIFIER, i1, k, j1, parent2[j]]]
 
-		#print 'Q2', i1, i, j1, j, Q2[i1][i][j1][j]
+		#print ('Q2', i1, i, j1, j, Q2[i1][i][j1][j])
 		return Q2[i1][i][j1][j]
 
 # Iterate across both the trees!
 for i1, j1 in itertools.product(range(1, size1 + 1), range(1, size2 + 1)):
 	for i in range(i1, right1[i1] + 1):
 		for j in range(j1, right2[j1] + 1):
-			#print i1, i, j1, j
+			#print (i1, i, j1, j)
 			Q1[i1][i][j1][j] = Q1f(i1, i, j1, j)
 			Q2[i1][i][j1][j] = Q2f(i1, i, j1, j)
 			Q[i1][i][j1][j] = Qf(i1, i, j1, j)
-			#print ''
+			#print ('')
 
 # Complete distance is given at the end the matrix
 difference = Q[1][right1[1]][1][right2[1]]
@@ -355,5 +355,5 @@ save_matrix(S, [filename1, filename2], S_IDENTIFIER)
 save_matrix(S1, [filename1, filename2], S1_IDENTIFIER)
 save_matrix(S2, [filename1, filename2], S2_IDENTIFIER)
 
-print 'Difference: ', difference, 'Time Taken: ', time_taken
+print ('Difference: ', difference, 'Time Taken: ', time_taken)
 os.system('date')

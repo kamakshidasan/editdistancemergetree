@@ -6,12 +6,13 @@ from random import randint
 try:
 	cores = int(sys.argv[1])
 	start = int(sys.argv[2])
+	end = int(sys.argv[3])
 except:
-	print '***** Usage: python test.py <cores> <start> *****'
+	print ('***** Usage: python test.py <cores> <start> <end> *****')
 	exit()
 
 count = start
-highest = 200
+highest = end
 
 # reusing a syringe and a results file has the same impact
 # throw away the earlier used results file
@@ -63,8 +64,8 @@ command = ""
 for i in range(0, cores):
 	command += "./script"+str(i)+".sh & "
 
-print 'Started!'
+print ('Started!')
 
 os.system(command)
 
-print 'next start at ', count
+print ('next start at ', count)
