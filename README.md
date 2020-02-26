@@ -1,5 +1,7 @@
 # Edit Distance
 
+![](tracking.png)
+
 This repository provides code to perform the following tasks:
 
 - Display a scalar field
